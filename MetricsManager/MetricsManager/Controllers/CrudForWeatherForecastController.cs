@@ -26,7 +26,7 @@ namespace MetricsManager.Controllers
                 _storage.Add(new WeatherForecast { Date = date.Value, TemperatureC = temperatureC.Value });
                 return Ok();
             }
-            else return BadRequest();
+            return BadRequest();
         }
         [HttpGet("watchSavedMetrics")]
         public IActionResult WatchSaveMetrics([FromQuery] DateTime? fromDate, [FromQuery] DateTime? byDate)
