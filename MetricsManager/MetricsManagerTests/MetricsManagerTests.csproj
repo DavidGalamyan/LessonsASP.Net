@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MetricsManager\MetricsManager.csproj" />
+    <ProjectReference Include="..\MetricsTool\MetricsTool.csproj" />
   </ItemGroup>
 
 </Project>
