@@ -1,4 +1,4 @@
-﻿using MetricsManager.Enums;
+﻿using MetricsManager;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;

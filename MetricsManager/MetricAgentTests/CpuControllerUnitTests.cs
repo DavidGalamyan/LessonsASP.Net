@@ -2,7 +2,7 @@ using MetricsAgent.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Xunit;
-using MetricsManager.Enums;
+using MetricsManager;
 
 namespace MetricAgentTests
 {
