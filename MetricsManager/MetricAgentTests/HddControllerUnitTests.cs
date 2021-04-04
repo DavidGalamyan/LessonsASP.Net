@@ -1,12 +1,12 @@
 using MetricsAgent.Controllers;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using Xunit;
 using Moq;
 using MetricsAgent.Model;
-using MetricsAgent.DAL;
 using Microsoft.Extensions.Logging;
 using MetricsAgent.Requests;
+using MetricsAgent.DAL.Interface;
+using System.Collections.Generic;
 
 namespace MetricAgentTests
 {
@@ -15,6 +15,18 @@ namespace MetricAgentTests
         private HddMetricsController _controller;
         private Mock<IHddMetricsRepository> _mock;
         private Mock<ILogger<HddMetricsController>> _mocklogger;
+
+        private List<HddMetric> GetTestUsers()
+        {
+            var users = new List<HddMetric>
+            {
+                new HddMetric { Id = 1, Time = TimeSpan.FromSeconds(1), Value = 22 },
+                new HddMetric { Id = 2, Time = TimeSpan.FromSeconds(10), Value = 33 },
+                new HddMetric { Id = 3, Time = TimeSpan.FromSeconds(20), Value = 11 },
+                new HddMetric { Id = 4, Time = TimeSpan.FromSeconds(11), Value = 24 }
+            };
+            return users;
+        }
 
         public HddControllerUnitTests()
         {
@@ -30,6 +42,16 @@ namespace MetricAgentTests
 
             var result = _controller.Create(new HddMetricCreateRequest { Time = TimeSpan.FromSeconds(2), Value = 33 });
             _mock.Verify(repository => repository.Create(It.IsAny<HddMetric>()), Times.AtMostOnce());
+        }
+
+        [Fact]
+        public void GetAll()
+        {
+            _mock.Setup(repo => repo.GetAll()).Returns(GetTestUsers());
+
+            var result = _controller.GetAll();
+
+            _mock.Verify(repository => repository.GetAll());
         }
     }
 }

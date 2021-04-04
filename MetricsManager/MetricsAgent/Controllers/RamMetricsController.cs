@@ -1,4 +1,4 @@
-﻿using MetricsAgent.DAL;
+﻿using MetricsAgent.DAL.Interface;
 using MetricsAgent.Model;
 using MetricsAgent.Requests;
 using MetricsAgent.Responses;

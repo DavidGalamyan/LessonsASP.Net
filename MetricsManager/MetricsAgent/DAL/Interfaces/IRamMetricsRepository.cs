@@ -1,33 +1,33 @@
-﻿using System;
+﻿using MetricsAgent.Model;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
-using MetricsAgent.Model;
 
-namespace MetricsAgent.DAL
+namespace MetricsAgent.DAL.Interface
 {
-    public interface IHddMetricsRepository : IRepository<HddMetric>
+    public interface IRamMetricsRepository : IRepository<RamMetric>
     {
 
     }
 
-    public class HddMetricsRepository : IHddMetricsRepository
+    public class RamMetricsRepository : IRamMetricsRepository
     {
         //connect on base
         private SQLiteConnection _connection;
         // инжектируем соединение с базой данных в репозиторий через конструктор
-        public HddMetricsRepository(SQLiteConnection connection)
+        public RamMetricsRepository(SQLiteConnection connection)
         {
             _connection = connection;
         }
 
-        public void Create(HddMetric item)
+        public void Create(RamMetric item)
         {
             //create command
             using var cmd = new SQLiteCommand(_connection);
             // SQL command Insert data base
-            cmd.CommandText = "INSERT INTO hddmetrics(value,time) VALUES(@value,@time)";
+            cmd.CommandText = "INSERT INTO rammetrics(value,time) VALUES(@value,@time)";
             // добавляем параметры в запрос из нашего объекта
             cmd.Parameters.AddWithValue("@value", item.Value);
             cmd.Parameters.AddWithValue("@time", item.Time.TotalSeconds);
@@ -41,20 +41,20 @@ namespace MetricsAgent.DAL
         {
             using var cmd = new SQLiteCommand(_connection);
             // cmd delete data
-            cmd.CommandText = "DELETE FROM hddmetrics WHERE id=@id";
+            cmd.CommandText = "DELETE FROM rammetrics WHERE id=@id";
 
             cmd.Parameters.AddWithValue("@id", id);
             cmd.Prepare();
             cmd.ExecuteNonQuery();
         }
 
-        public IList<HddMetric> GetAll()
+        public IList<RamMetric> GetAll()
         {
             using var cmd = new SQLiteCommand(_connection);
 
-            cmd.CommandText = "SELECT * FROM hddmetrics";
+            cmd.CommandText = "SELECT * FROM rammetrics";
 
-            var returnList = new List<HddMetric>();
+            var returnList = new List<RamMetric>();
 
             using (SQLiteDataReader reader = cmd.ExecuteReader())
             {
@@ -62,7 +62,7 @@ namespace MetricsAgent.DAL
                 while (reader.Read())
                 {
                     //добавляем объект в список возврата
-                    returnList.Add(new HddMetric
+                    returnList.Add(new RamMetric
                     {
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
@@ -74,17 +74,17 @@ namespace MetricsAgent.DAL
             return returnList;
         }
 
-        public HddMetric GetById(int id)
+        public RamMetric GetById(int id)
         {
             using var cmd = new SQLiteCommand(_connection);
-            cmd.CommandText = "SELECT * FROM hddmetrics WHERE id=@id";
+            cmd.CommandText = "SELECT * FROM rammetrics WHERE id=@id";
             using (SQLiteDataReader reader = cmd.ExecuteReader())
             {
                 // если удалось что-то найти (прочитать)
                 if (reader.Read())
                 {
                     //return value
-                    return new HddMetric
+                    return new RamMetric
                     {
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
@@ -95,11 +95,11 @@ namespace MetricsAgent.DAL
             }
         }
 
-        public void Update(HddMetric item)
+        public void Update(RamMetric item)
         {
             using var cmd = new SQLiteCommand(_connection);
             //прописываем команду SQL на обнавление данных
-            cmd.CommandText = "UPDATE dotnetmetrics SET value = @value, time = @time WHERE id=@id;";
+            cmd.CommandText = "UPDATE rammetrics SET value = @value, time = @time WHERE id=@id;";
             cmd.Parameters.AddWithValue("@id", item.Id);
             cmd.Parameters.AddWithValue("@value", item.Value);
             cmd.Parameters.AddWithValue("@time", item.Time.TotalSeconds);

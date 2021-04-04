@@ -2,11 +2,11 @@
 using System;
 using MetricsTool;
 using Microsoft.Extensions.Logging;
-using MetricsAgent.DAL;
 using MetricsAgent.Requests;
 using MetricsAgent.Model;
 using MetricsAgent.Responses;
 using System.Collections.Generic;
+using MetricsAgent.DAL.Interface;
 
 namespace MetricsAgent.Controllers
 {

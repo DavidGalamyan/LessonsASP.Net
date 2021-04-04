@@ -1,12 +1,12 @@
 using MetricsAgent.Controllers;
-using MetricsAgent.DAL;
 using MetricsAgent.Model;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using Xunit;
 using MetricsAgent.Requests;
+using MetricsAgent.DAL.Interface;
+using System.Collections.Generic;
 
 namespace MetricAgentTests
 {
@@ -15,6 +15,18 @@ namespace MetricAgentTests
         private DotNetMetricsController _controller;
         private Mock<IDotNetMetricsRepository> _mock;
         private Mock<ILogger<DotNetMetricsController>> _mocklogger;
+
+        private List<DotNetMetric> GetTestUsers()
+        {
+            var users = new List<DotNetMetric>
+            {
+                new DotNetMetric { Id = 1, Time = TimeSpan.FromSeconds(1), Value = 22 },
+                new DotNetMetric { Id = 2, Time = TimeSpan.FromSeconds(10), Value = 33 },
+                new DotNetMetric { Id = 3, Time = TimeSpan.FromSeconds(20), Value = 11 },
+                new DotNetMetric { Id = 4, Time = TimeSpan.FromSeconds(11), Value = 24 }
+            };
+            return users;
+        }
 
         public DotNetControllerUnitTests()
         {
@@ -36,6 +48,16 @@ namespace MetricAgentTests
             // проверяем заглушку на то, что пока работал контроллер
             // действительно вызвался метод Create репозитория с нужным типом объекта в параметре
             _mock.Verify(repository => repository.Create(It.IsAny<DotNetMetric>()), Times.AtMostOnce());
+        }
+
+        [Fact]
+        public void GetAll()
+        {
+            _mock.Setup(repo => repo.GetAll()).Returns(GetTestUsers());
+
+            var result = _controller.GetAll();
+
+            _mock.Verify(repository => repository.GetAll());
         }
     }
 }

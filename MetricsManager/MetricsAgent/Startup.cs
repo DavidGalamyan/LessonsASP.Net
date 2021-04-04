@@ -1,4 +1,5 @@
 using MetricsAgent.DAL;
+using MetricsAgent.DAL.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

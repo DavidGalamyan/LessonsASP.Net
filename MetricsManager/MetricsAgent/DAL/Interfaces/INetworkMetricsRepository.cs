@@ -5,7 +5,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsAgent.DAL
+namespace MetricsAgent.DAL.Interface
 {
     public interface INetworkMetricsRepository : IRepository<NetworkMetric>
     {

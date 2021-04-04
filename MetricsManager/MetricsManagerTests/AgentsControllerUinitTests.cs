@@ -1,21 +1,25 @@
 ﻿using MetricsManager;
 using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using Microsoft.Extensions.Logging;
+using Moq;
 using System.Collections.Generic;
 using Xunit;
+
 
 namespace MetricsManagerTests
 {
     public class AgentsControllerUinitTests
     {
         private AgentsController _controller;
-
+        private Mock<ILogger<AgentsController>> _logger;
         private readonly List<AgentInfo> _agentsList;
 
         public AgentsControllerUinitTests()
         {
-            _controller = new AgentsController(_agentsList);
+            _logger = new Mock<ILogger<AgentsController>>();
+            _agentsList = new List<AgentInfo>();
+            _controller = new AgentsController(_agentsList, _logger.Object);
         }
 
         [Fact]

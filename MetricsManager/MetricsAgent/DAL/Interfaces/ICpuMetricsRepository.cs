@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MetricsAgent.Model;
 
-namespace MetricsAgent.DAL
+namespace MetricsAgent.DAL.Interface
 {
     public interface ICpuMetricsRepository : IRepository<CpuMetric>
     {

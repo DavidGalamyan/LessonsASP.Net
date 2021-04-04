@@ -1,12 +1,12 @@
 using MetricsAgent.Controllers;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using Xunit;
 using Moq;
 using MetricsAgent.Model;
-using MetricsAgent.DAL;
 using Microsoft.Extensions.Logging;
 using MetricsAgent.Requests;
+using MetricsAgent.DAL.Interface;
+using System.Collections.Generic;
 
 namespace MetricAgentTests
 {
@@ -15,6 +15,18 @@ namespace MetricAgentTests
         private NetworkMetricsController _controller;
         private Mock<INetworkMetricsRepository> _mock;
         private Mock<ILogger<NetworkMetricsController>> _mocklogger;
+
+        private List<NetworkMetric> GetTestUsers()
+        {
+            var users = new List<NetworkMetric>
+            {
+                new NetworkMetric { Id = 1, Time = TimeSpan.FromSeconds(1), Value = 22 },
+                new NetworkMetric { Id = 2, Time = TimeSpan.FromSeconds(10), Value = 33 },
+                new NetworkMetric { Id = 3, Time = TimeSpan.FromSeconds(20), Value = 11 },
+                new NetworkMetric { Id = 4, Time = TimeSpan.FromSeconds(11), Value = 24 }
+            };
+            return users;
+        }
 
         public NetworkControllerUnitTests()
         {
@@ -30,6 +42,16 @@ namespace MetricAgentTests
 
             var result = _controller.Create(new NetworkMetricCreateRequest { Time = TimeSpan.FromSeconds(11), Value = 12 });
             _mock.Verify(repository => repository.Create(It.IsAny<NetworkMetric>()), Times.AtMostOnce());
+        }
+
+        [Fact]
+        public void GetAll()
+        {
+            _mock.Setup(repo => repo.GetAll()).Returns(GetTestUsers());
+
+            var result = _controller.GetAll();
+
+            _mock.Verify(repository => repository.GetAll());
         }
     }
 }
