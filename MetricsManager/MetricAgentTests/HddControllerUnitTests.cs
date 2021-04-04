@@ -1,25 +1,57 @@
 using MetricsAgent.Controllers;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using Xunit;
+using Moq;
+using MetricsAgent.Model;
+using Microsoft.Extensions.Logging;
+using MetricsAgent.Requests;
+using MetricsAgent.DAL.Interface;
+using System.Collections.Generic;
 
 namespace MetricAgentTests
 {
     public class HddControllerUnitTests
     {
         private HddMetricsController _controller;
+        private Mock<IHddMetricsRepository> _mock;
+        private Mock<ILogger<HddMetricsController>> _mocklogger;
+
+        private List<HddMetric> GetTestUsers()
+        {
+            var users = new List<HddMetric>
+            {
+                new HddMetric { Id = 1, Time = TimeSpan.FromSeconds(1), Value = 22 },
+                new HddMetric { Id = 2, Time = TimeSpan.FromSeconds(10), Value = 33 },
+                new HddMetric { Id = 3, Time = TimeSpan.FromSeconds(20), Value = 11 },
+                new HddMetric { Id = 4, Time = TimeSpan.FromSeconds(11), Value = 24 }
+            };
+            return users;
+        }
 
         public HddControllerUnitTests()
         {
-            _controller = new HddMetricsController();
+            _mock = new Mock<IHddMetricsRepository>();
+            _mocklogger = new Mock<ILogger<HddMetricsController>>();
+            _controller = new HddMetricsController(_mocklogger.Object,_mock.Object);
         }
 
         [Fact]
-        public void GetMetrics_ReturnsOk()
+        public void Create_ShouldCall_Create_From_Repository()
         {
-            var result = _controller.GetMetrics();
+            _mock.Setup(repository => repository.Create(It.IsAny<HddMetric>())).Verifiable();
 
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
+            var result = _controller.Create(new HddMetricCreateRequest { Time = TimeSpan.FromSeconds(2), Value = 33 });
+            _mock.Verify(repository => repository.Create(It.IsAny<HddMetric>()), Times.AtMostOnce());
+        }
+
+        [Fact]
+        public void GetAll()
+        {
+            _mock.Setup(repo => repo.GetAll()).Returns(GetTestUsers());
+
+            var result = _controller.GetAll();
+
+            _mock.Verify(repository => repository.GetAll());
         }
     }
 }

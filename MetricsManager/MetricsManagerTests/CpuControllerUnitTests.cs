@@ -4,16 +4,20 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using Xunit;
 using MetricsTool;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace MetricsManagerTests
 {
     public class CpuControllerUnitTests
     {
         private CpuMetricsController _controller;
+        private Mock<ILogger<CpuMetricsController>> _logger;
 
         public CpuControllerUnitTests()
         {
-            _controller = new CpuMetricsController();
+            _logger = new Mock<ILogger<CpuMetricsController>>();
+            _controller = new CpuMetricsController(_logger.Object);
         }
 
         [Fact]
@@ -48,18 +52,18 @@ namespace MetricsManagerTests
             var percentile = Percentile.Median;
 
             var result = _controller.GetMetricsByPercentileFromAgent(agentId, fromTime, toTime, percentile);
-           
+
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
 
         [Fact]
         public void GetMetricsByPercentileFromAllCluster_ReturnsOk()
-        {           
+        {
             var fromTime = TimeSpan.FromSeconds(0);
             var toTime = TimeSpan.FromSeconds(100);
             var percentile = Percentile.Median;
 
-            var result = _controller.GetMetricsByPercentileFromAllCluster( fromTime, toTime, percentile);
+            var result = _controller.GetMetricsByPercentileFromAllCluster(fromTime, toTime, percentile);
 
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
