@@ -1,5 +1,5 @@
 using MetricsAgent.Controllers;
-using MetricsAgent.Model;
+using MetricsAgent.DAL.Model;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;

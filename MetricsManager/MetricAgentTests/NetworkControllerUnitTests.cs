@@ -2,7 +2,7 @@ using MetricsAgent.Controllers;
 using System;
 using Xunit;
 using Moq;
-using MetricsAgent.Model;
+using MetricsAgent.DAL.Model;
 using Microsoft.Extensions.Logging;
 using MetricsAgent.Requests;
 using MetricsAgent.DAL.Interface;

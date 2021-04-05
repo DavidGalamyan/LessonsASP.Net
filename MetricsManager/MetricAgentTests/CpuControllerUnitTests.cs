@@ -1,11 +1,11 @@
 using MetricsAgent.Controllers;
-using System;
-using Xunit;  
-using Moq;
-using Microsoft.Extensions.Logging;
-using MetricsAgent.Model;
 using MetricsAgent.DAL.Interface;
+using MetricsAgent.DAL.Model;
+using Microsoft.Extensions.Logging;
+using Moq;
+using System;
 using System.Collections.Generic;
+using Xunit;
 
 namespace MetricAgentTests
 {
