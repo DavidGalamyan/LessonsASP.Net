@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using MetricsAgent.Requests;
 using MetricsAgent.DAL.Interface;
 using System.Collections.Generic;
+using AutoMapper;
+using MetricsAgent;
 
 namespace MetricAgentTests
 {
@@ -30,9 +32,13 @@ namespace MetricAgentTests
 
         public NetworkControllerUnitTests()
         {
+            var myProfile = new MapperProfile();
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+            var mapper = new Mapper(configuration);
+
             _mock = new Mock<INetworkMetricsRepository>();
             _mocklogger = new Mock<ILogger<NetworkMetricsController>>();
-            _controller = new NetworkMetricsController(_mocklogger.Object,_mock.Object);
+            _controller = new NetworkMetricsController(_mocklogger.Object,_mock.Object, mapper);
         }
 
         [Fact]

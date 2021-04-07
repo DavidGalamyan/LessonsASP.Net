@@ -1,4 +1,5 @@
-﻿using MetricsAgent.DAL.Interface;
+﻿using AutoMapper;
+using MetricsAgent.DAL.Interface;
 using MetricsAgent.DAL.Model;
 using MetricsAgent.Requests;
 using MetricsAgent.Responses;
@@ -15,12 +16,14 @@ namespace MetricsAgent.Controllers
     {
         private readonly ILogger<HddMetricsController> _logger;
         private readonly IHddMetricsRepository _repository;
+        private readonly IMapper _mapper;
 
-        public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository)
+        public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в HddMetricsController");
             _repository = repository;
+            _mapper = mapper;
         }
 
 
@@ -40,7 +43,7 @@ namespace MetricsAgent.Controllers
         public IActionResult GetAll()
         {
             _logger.LogInformation($"GetAllHddMetric");
-            var metrics = _repository.GetAll();
+            IList<HddMetric> metrics = _repository.GetAll();
 
             var response = new AllHddMetricsResponse()
             {
@@ -49,8 +52,9 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new HddMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(_mapper.Map<HddMetricDto>(metric));
             }
+
             return Ok(response);
         }
 

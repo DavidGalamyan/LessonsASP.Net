@@ -14,6 +14,8 @@ namespace MetricsAgent
     {
         public static void Main(string[] args)
         {
+            long time = new DateTimeOffset(new DateTime(2020, 05, 11), TimeSpan.FromHours(5)).ToLocalTime().ToUnixTimeSeconds();
+
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {

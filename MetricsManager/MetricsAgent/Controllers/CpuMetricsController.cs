@@ -1,4 +1,5 @@
-﻿using MetricsAgent.DAL.Interface;
+﻿using AutoMapper;
+using MetricsAgent.DAL.Interface;
 using MetricsAgent.DAL.Model;
 using MetricsAgent.Requests;
 using MetricsAgent.Responses;
@@ -16,12 +17,14 @@ namespace MetricsAgent.Controllers
     {
         private readonly ILogger<CpuMetricsController> _logger;
         private readonly ICpuMetricsRepository _repository;
+        private readonly IMapper _mapper;
 
-        public CpuMetricsController(ILogger<CpuMetricsController> logger, ICpuMetricsRepository repository)
+        public CpuMetricsController(ILogger<CpuMetricsController> logger, ICpuMetricsRepository repository, IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
+            _mapper = mapper;
         }
 
         [HttpPost("create")]
@@ -40,7 +43,7 @@ namespace MetricsAgent.Controllers
         public IActionResult GetAll()
         {
             _logger.LogInformation($"GetAllMetricCpu");
-            var metrics = _repository.GetAll();
+            IList<CpuMetric> metrics = _repository.GetAll();
 
             var response = new AllCpuMetricsResponse()
             {
@@ -49,25 +52,10 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new CpuMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
             }
+
             return Ok(response);
-        }
-
-        [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
-        public IActionResult GetMetricsByPercentile([FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime, [FromRoute] Percentile percentile)
-        {
-            _logger.LogInformation($"GetMetricsByPercentile: fromTime {fromTime},toTime {toTime},Percentile {percentile}");
-            return Ok();
-        }
-
-        [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics([FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime)
-        {
-            _logger.LogInformation($"GetMetrics: fromTime {fromTime},toTime {toTime}");
-            return Ok();
         }
     }
 }

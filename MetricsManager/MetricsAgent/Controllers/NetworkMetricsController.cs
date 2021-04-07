@@ -1,4 +1,5 @@
-﻿using MetricsAgent.DAL.Interface;
+﻿using AutoMapper;
+using MetricsAgent.DAL.Interface;
 using MetricsAgent.DAL.Model;
 using MetricsAgent.Requests;
 using MetricsAgent.Responses;
@@ -16,11 +17,13 @@ namespace MetricsAgent.Controllers
     {
         private readonly ILogger<NetworkMetricsController> _logger;
         private readonly INetworkMetricsRepository _repository;
+        private readonly IMapper _mapper;
 
-        public NetworkMetricsController(ILogger<NetworkMetricsController> logger,INetworkMetricsRepository repository)
+        public NetworkMetricsController(ILogger<NetworkMetricsController> logger,INetworkMetricsRepository repository,IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
             _logger.LogDebug(1, "NLog встроен в NetworkMetricsController");
         }
 
@@ -40,7 +43,7 @@ namespace MetricsAgent.Controllers
         public IActionResult GetAll()
         {
             _logger.LogInformation($"GetAllNetworkMetric");
-            var metrics = _repository.GetAll();
+            IList<NetworkMetric> metrics = _repository.GetAll();
 
             var response = new AllNetworkMetricsResponse()
             {
@@ -49,7 +52,7 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new NetworkMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(_mapper.Map<NetworkMetricDto>(metric));
             }
             return Ok(response);
         }

@@ -1,4 +1,5 @@
-﻿using MetricsAgent.DAL.Interface;
+﻿using AutoMapper;
+using MetricsAgent.DAL.Interface;
 using MetricsAgent.DAL.Model;
 using MetricsAgent.Requests;
 using MetricsAgent.Responses;
@@ -14,11 +15,13 @@ namespace MetricsAgent.Controllers
     {
         private readonly ILogger<RamMetricsController> _logger;
         private readonly IRamMetricsRepository _repository;
+        private readonly IMapper _mapper;
 
-        public RamMetricsController(ILogger<RamMetricsController> logger, IRamMetricsRepository repository)
+        public RamMetricsController(ILogger<RamMetricsController> logger, IRamMetricsRepository repository,IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
             _logger.LogDebug(1, "NLog встроен в NetworkMetricsController");
         }
 
@@ -38,7 +41,8 @@ namespace MetricsAgent.Controllers
         public IActionResult GetAll()
         {
             _logger.LogInformation($"GetAllRamMetric");
-            var metrics = _repository.GetAll();
+
+            IList<RamMetric> metrics = _repository.GetAll();
 
             var response = new AllRamMetricsResponse()
             {
@@ -47,7 +51,7 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new RamMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(_mapper.Map<RamMetricDto>(metric));
             }
             return Ok(response);
         }
