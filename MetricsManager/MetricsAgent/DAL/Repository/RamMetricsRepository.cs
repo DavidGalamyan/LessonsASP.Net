@@ -11,9 +11,9 @@ namespace MetricsAgent.DAL.Repository
 
     public class RamMetricsRepository : IRamMetricsRepository
     {
-        private const string ConnectionString = "@Data Source=metrics.db;Version=3;Pooling=Ture;Max Pool Size=100;";
+        private const string ConnectionString = @"Data Source=metrics.db;Version=3;Pooling=True;Max Pool Size=100;";
 
-        RamMetricsRepository()
+        public RamMetricsRepository()
         {
             SqlMapper.AddTypeHandler(new TimeSpanHandler());
         }
@@ -35,7 +35,7 @@ namespace MetricsAgent.DAL.Repository
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                return connection.Query<RamMetric>("SELECT Id,Time,Value FROM rammetric").ToList();
+                return connection.Query<RamMetric>("SELECT Id,Time,Value FROM rammetrics").ToList();
             }
         }
 

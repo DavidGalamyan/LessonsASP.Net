@@ -22,6 +22,10 @@ namespace MetricsAgent
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
+
             services.AddControllers();
             ConfigureSqlLiteConnection(services);
             services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>();
@@ -29,10 +33,6 @@ namespace MetricsAgent
             services.AddSingleton<IHddMetricsRepository, HddMetricsRepository>();
             services.AddSingleton<IRamMetricsRepository, RamMetricsRepository>();
             services.AddSingleton<INetworkMetricsRepository, NetworkMetricsRepository>();
-
-            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
-            var mapper = mapperConfiguration.CreateMapper();
-            services.AddSingleton(mapper);
         }
 
         private void ConfigureSqlLiteConnection(IServiceCollection services)
