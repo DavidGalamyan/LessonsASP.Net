@@ -57,5 +57,20 @@ namespace MetricsAgent.Controllers
 
             return Ok(response);
         }
+        [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
+        public IActionResult GetMetricsByPercentile([FromRoute] TimeSpan fromTime,
+           [FromRoute] TimeSpan toTime, [FromRoute] Percentile percentile)
+        {
+            _logger.LogInformation($"GetMetricsByPercentile: fromTime {fromTime},toTime {toTime},Percentile {percentile}");
+            return Ok();
+        }
+
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetrics([FromRoute] TimeSpan fromTime,
+            [FromRoute] TimeSpan toTime)
+        {
+            _logger.LogInformation($"GetMetrics: fromTime {fromTime},toTime {toTime}");
+            return Ok();            
+        }
     }
 }
