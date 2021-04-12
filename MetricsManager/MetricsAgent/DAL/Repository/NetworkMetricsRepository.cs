@@ -14,37 +14,39 @@ namespace MetricsAgent.DAL.Repository
 
         public NetworkMetricsRepository()
         {
-            SqlMapper.AddTypeHandler(new TimeSpanHandler());
+            // добавляем парсилку типа DateTimeOffset в качестве подсказки для SQLite
+            SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
-
         public void Create(NetworkMetric item)
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                connection.Execute("INSERT INTO networkmetrics(value,time) VALUES (@value,@time)",
-                    new 
-                    { 
-                        value = item.Value, 
-                        time = item.Time.TotalSeconds 
+                //  запрос на вставку данных с плейсхолдерами для параметров
+                connection.Execute("INSERT INTO networkmetrics(value, time) VALUES(@value, @time)",
+                    // анонимный объект с параметрами запроса
+                    new
+                    {
+                        // value подставится на место "@value" в строке запроса
+                        // значение запишется из поля Value объекта item
+                        value = item.Value,
+
+                        // записываем в поле time количество секунд
+                        time = item.Time.ToUnixTimeSeconds()
                     });
             }
         }
 
-        public IList<NetworkMetric> GetAll()
+        public IList<NetworkMetric> GetByTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
-           using (var connection = new SQLiteConnection(ConnectionString))
-           {
-                return connection.Query<NetworkMetric>("SELECT Id,Time,Value FROM networkmetrics").ToList();
-           }
-            
-        }
 
-        public NetworkMetric GetById(int id)
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (var conncetion = new SQLiteConnection(ConnectionString))
             {
-                return connection.QuerySingle<NetworkMetric>("SELECT Id,Time,Value FROM networkmetrics WHERE id=@id",
-                    new { id = id });
+                return conncetion.Query<NetworkMetric>("SELECT * FROM networkmetrics WHERE (Time>=@fromTime AND Time<=@toTime)",
+                  new
+                  {
+                      fromTime = fromTime.ToUnixTimeSeconds(),
+                      toTime = toTime.ToUnixTimeSeconds()
+                  }).ToList();
             }
         }
     }

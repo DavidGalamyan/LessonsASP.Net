@@ -35,42 +35,24 @@ namespace MetricsAgent.Controllers
             {
                 Time = request.Time,
                 Value = request.Value
-            });
+            }) ;
             return Ok();
         }
 
-        [HttpGet("all")]
-        public IActionResult GetAll()
+        [HttpGet("getmetric")]
+        public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffset)
         {
-            _logger.LogInformation($"GetAllMetricCpu");
-            IList<CpuMetric> metrics = _repository.GetAll();
-
+            _logger.LogInformation($"GetMetricsByTimeInterval: fromTime {dateTimeOffset.fromTime},toTime {dateTimeOffset.toTime}");
+            var metrics = _repository.GetByTimeInterval(dateTimeOffset.fromTime, dateTimeOffset.toTime);
             var response = new AllCpuMetricsResponse()
             {
                 Metrics = new List<CpuMetricDto>()
             };
-
             foreach (var metric in metrics)
             {
                 response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
             }
-
-            return Ok(response);
-        }
-        [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
-        public IActionResult GetMetricsByPercentile([FromRoute] TimeSpan fromTime,
-           [FromRoute] TimeSpan toTime, [FromRoute] Percentile percentile)
-        {
-            _logger.LogInformation($"GetMetricsByPercentile: fromTime {fromTime},toTime {toTime},Percentile {percentile}");
-            return Ok();
-        }
-
-        [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics([FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime)
-        {
-            _logger.LogInformation($"GetMetrics: fromTime {fromTime},toTime {toTime}");
-            return Ok();            
+            return Ok(response);           
         }
     }
 }

@@ -38,31 +38,22 @@ namespace MetricsAgent.Controllers
             return Ok();
         }
 
-        [HttpGet("all")]
-        public IActionResult GetAll()
-        {
-            _logger.LogInformation($"GetAllDotNetMetric");
-            IList<DotNetMetric> metrics = _repository.GetAll();
 
+        [HttpGet("getmetric")]
+        public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffsetModel)
+        {
+            _logger.LogInformation($"GetMetricsByTimeInterval: fromTime {dateTimeOffsetModel.fromTime},toTime {dateTimeOffsetModel.toTime}");
+            var metrics = _repository.GetByTimeInterval(dateTimeOffsetModel.fromTime, dateTimeOffsetModel.toTime);
             var response = new AllDotNetMetricsResponse()
             {
                 Metrics = new List<DotNetMetricDto>()
             };
-
             foreach (var metric in metrics)
             {
                 response.Metrics.Add(_mapper.Map<DotNetMetricDto>(metric));
             }
-
             return Ok(response);
         }
 
-        [HttpGet("errors-count/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics([FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime)
-        {
-            _logger.LogInformation($"GetMetrics: fromTime {fromTime}, toTime {toTime}");
-            return Ok();
-        }
     }
 }
