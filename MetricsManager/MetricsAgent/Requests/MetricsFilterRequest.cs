@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace MetricsAgent.Requests
 {
-    public class CpuMetricCreateRequest
+    public class MetricsFilterRequest
     {
-        public DateTimeOffset Time { get; set; }
-        public int Value { get; set; }
+        public DateTimeOffset fromTime { get; set; }
+
+        public DateTimeOffset toTime { get; set; }
     }
 }

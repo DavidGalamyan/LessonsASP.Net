@@ -39,30 +39,20 @@ namespace MetricsAgent.Controllers
             return Ok();
         }
 
-        [HttpGet("all")]
-        public IActionResult GetAll()
+        [HttpGet("getmetric")]
+        public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffsetModel)
         {
-            _logger.LogInformation($"GetAllNetworkMetric");
-            IList<NetworkMetric> metrics = _repository.GetAll();
-
+            _logger.LogInformation($"GetMetricsByTimeInterval: fromTime {dateTimeOffsetModel.fromTime},toTime {dateTimeOffsetModel.toTime}");
+            var metrics = _repository.GetByTimeInterval(dateTimeOffsetModel.fromTime, dateTimeOffsetModel.toTime);
             var response = new AllNetworkMetricsResponse()
             {
                 Metrics = new List<NetworkMetricDto>()
             };
-
             foreach (var metric in metrics)
             {
                 response.Metrics.Add(_mapper.Map<NetworkMetricDto>(metric));
             }
             return Ok(response);
-        }
-
-        [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics([FromRoute] TimeSpan fromTime,
-               [FromRoute] TimeSpan toTime)
-        {
-            _logger.LogInformation($"GetMetricsFrom: fromTime {fromTime},toTime {toTime}");
-            return Ok();
         }
     }
 }

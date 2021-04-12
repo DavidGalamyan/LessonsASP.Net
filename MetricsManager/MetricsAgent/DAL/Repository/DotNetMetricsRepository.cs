@@ -15,35 +15,39 @@ namespace MetricsAgent.DAL.Repository
 
         public DotNetMetricsRepository()
         {
-            SqlMapper.AddTypeHandler(new TimeSpanHandler());
+            // добавляем парсилку типа TimeSpan в качестве подсказки для SQLite
+            SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
         public void Create(DotNetMetric item)
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                connection.Execute("INSERT INTO dotnetmetrics(value, time) VALUES(@value,@time)",
+                //  запрос на вставку данных с плейсхолдерами для параметров
+                connection.Execute("INSERT INTO dotnetmetrics(value, time) VALUES(@value, @time)",
+                    // анонимный объект с параметрами запроса
                     new
                     {
+                        // value подставится на место "@value" в строке запроса
+                        // значение запишется из поля Value объекта item
                         value = item.Value,
-                        time = item.Time.TotalSeconds
+
+                        // записываем в поле time количество секунд
+                        time = item.Time.ToUnixTimeSeconds()
                     });
             }
         }
 
-        public IList<DotNetMetric> GetAll()
+        public IList<DotNetMetric> GetByTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                return connection.Query<DotNetMetric>("SELECT Id, Time, Value FROM dotnetmetrics").ToList();
-            }
-        }
 
-        public DotNetMetric GetById(int id)
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (var conncetion = new SQLiteConnection(ConnectionString))
             {
-                return connection.QuerySingle<DotNetMetric>("SELECT Id, Time, Value FROM dotnetmetrics WHERE id=@id",
-                    new { id = id });
+                return conncetion.Query<DotNetMetric>("SELECT * FROM dotnetmetrics WHERE (Time>=@fromTime AND Time<=@toTime)",
+                  new
+                  {
+                      fromTime = fromTime.ToUnixTimeSeconds(),
+                      toTime = toTime.ToUnixTimeSeconds()
+                  }).ToList();
             }
         }
     }

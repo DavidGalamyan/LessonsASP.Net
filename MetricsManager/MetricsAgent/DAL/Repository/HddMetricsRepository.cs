@@ -14,36 +14,39 @@ namespace MetricsAgent.DAL.Repository
 
         public HddMetricsRepository()
         {
-            SqlMapper.AddTypeHandler(new TimeSpanHandler());
+            // добавляем парсилку типа DateTimeOffset в качестве подсказки для SQLite
+            SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
-
         public void Create(HddMetric item)
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                connection.Execute("INSERT INTO hddmetrics(value, time) VALUES (@value,@time)",
+                //  запрос на вставку данных с плейсхолдерами для параметров
+                connection.Execute("INSERT INTO hddmetrics(value, time) VALUES(@value, @time)",
+                    // анонимный объект с параметрами запроса
                     new
                     {
+                        // value подставится на место "@value" в строке запроса
+                        // значение запишется из поля Value объекта item
                         value = item.Value,
-                        time = item.Time.TotalSeconds
+
+                        // записываем в поле time количество секунд
+                        time = item.Time.ToUnixTimeSeconds()
                     });
             }
         }
 
-        public IList<HddMetric> GetAll()
+        public IList<HddMetric> GetByTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                return connection.Query<HddMetric>("SELECT Id,Time,Value FROM hddmetrics").ToList();
-            }
-        }
 
-        public HddMetric GetById(int id)
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (var conncetion = new SQLiteConnection(ConnectionString))
             {
-                return connection.QuerySingle<HddMetric>("SELECT Id,Time,Value FROM hddmetrics WHERE id=@id",
-                    new { id = id });
+                return conncetion.Query<HddMetric>("SELECT * FROM hddmetrics WHERE (Time>=@fromTime AND Time<=@toTime)",
+                  new
+                  {
+                      fromTime = fromTime.ToUnixTimeSeconds(),
+                      toTime = toTime.ToUnixTimeSeconds()
+                  }).ToList();
             }
         }
     }

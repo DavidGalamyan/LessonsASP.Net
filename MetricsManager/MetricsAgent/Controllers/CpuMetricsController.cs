@@ -27,20 +27,32 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
-        public IActionResult GetMetricsByPercentile([FromRoute] TimeSpan fromTime,
-        [FromRoute] TimeSpan toTime, [FromRoute] Percentile percentile)
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
         {
-            _logger.LogInformation($"GetMetricsByPercentile: fromTime {fromTime},toTime {toTime},Percentile {percentile}");
+            _logger.LogInformation($"CreateMetricCpu (Request.Time :{request.Time}, Request.Value:{request.Value})");
+            _repository.Create(new CpuMetric
+            {
+                Time = request.Time,
+                Value = request.Value
+            }) ;
             return Ok();
         }
 
-        [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics([FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime)
+        [HttpGet("getmetric")]
+        public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffset)
         {
-            _logger.LogInformation($"GetMetrics: fromTime {fromTime},toTime {toTime}");
-            return Ok();
+            _logger.LogInformation($"GetMetricsByTimeInterval: fromTime {dateTimeOffset.fromTime},toTime {dateTimeOffset.toTime}");
+            var metrics = _repository.GetByTimeInterval(dateTimeOffset.fromTime, dateTimeOffset.toTime);
+            var response = new AllCpuMetricsResponse()
+            {
+                Metrics = new List<CpuMetricDto>()
+            };
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(_mapper.Map<CpuMetricDto>(metric));
+            }
+            return Ok(response);           
         }
     }
 }
