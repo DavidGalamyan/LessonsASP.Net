@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsAgent.Model
+namespace MetricsAgent.DAL.Model
 {
     public class DotNetMetric
     {
@@ -11,6 +11,6 @@ namespace MetricsAgent.Model
 
         public int Value { get; set; }
 
-        public TimeSpan Time { get; set; }
+        public DateTimeOffset Time { get; set; }
     }
 }

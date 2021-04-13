@@ -1,11 +1,13 @@
+using AutoMapper;
+using MetricsAgent;
 using MetricsAgent.Controllers;
-using System;
-using Xunit;  
-using Moq;
-using Microsoft.Extensions.Logging;
-using MetricsAgent.Model;
 using MetricsAgent.DAL.Interface;
+using MetricsAgent.DAL.Model;
+using Microsoft.Extensions.Logging;
+using Moq;
+using System;
 using System.Collections.Generic;
+using Xunit;
 
 namespace MetricAgentTests
 {
@@ -13,13 +15,18 @@ namespace MetricAgentTests
     {
         private CpuMetricsController _controller;
         private Mock<ICpuMetricsRepository> _mock;        
-        private Mock<ILogger<CpuMetricsController>> _mocklogger;
+        private Mock<ILogger<CpuMetricsController>> _mocklogger;        
 
         public CpuControllerUnitTests()
         {
+            var myProfile = new MapperProfile();
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+            var mapper = new Mapper(configuration);
+
             _mock = new Mock<ICpuMetricsRepository>();
             _mocklogger = new Mock<ILogger<CpuMetricsController>>();
-            _controller = new CpuMetricsController(_mocklogger.Object, _mock.Object);
+            _controller = new CpuMetricsController(_mocklogger.Object, _mock.Object, mapper);
+
         }
 
         private List<CpuMetric> GetTestUsers()

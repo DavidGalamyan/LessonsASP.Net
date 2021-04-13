@@ -2,11 +2,13 @@ using MetricsAgent.Controllers;
 using System;
 using Xunit;
 using Moq;
-using MetricsAgent.Model;
+using MetricsAgent.DAL.Model;
 using Microsoft.Extensions.Logging;
 using MetricsAgent.Requests;
 using MetricsAgent.DAL.Interface;
 using System.Collections.Generic;
+using MetricsAgent;
+using AutoMapper;
 
 namespace MetricAgentTests
 {
@@ -30,9 +32,13 @@ namespace MetricAgentTests
 
         public HddControllerUnitTests()
         {
+            var myProfile = new MapperProfile();
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+            var mapper = new Mapper(configuration);
+
             _mock = new Mock<IHddMetricsRepository>();
             _mocklogger = new Mock<ILogger<HddMetricsController>>();
-            _controller = new HddMetricsController(_mocklogger.Object,_mock.Object);
+            _controller = new HddMetricsController(_mocklogger.Object,_mock.Object, mapper);
         }
 
         [Fact]

@@ -1,5 +1,6 @@
-using MetricsAgent.DAL;
+using AutoMapper;
 using MetricsAgent.DAL.Interface;
+using MetricsAgent.DAL.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,18 +22,22 @@ namespace MetricsAgent
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
+
             services.AddControllers();
             ConfigureSqlLiteConnection(services);
-            services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
-            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
-            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
-            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
-            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
+            services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>();
+            services.AddSingleton<IDotNetMetricsRepository, DotNetMetricsRepository>();
+            services.AddSingleton<IHddMetricsRepository, HddMetricsRepository>();
+            services.AddSingleton<IRamMetricsRepository, RamMetricsRepository>();
+            services.AddSingleton<INetworkMetricsRepository, NetworkMetricsRepository>();
         }
 
         private void ConfigureSqlLiteConnection(IServiceCollection services)
         {
-            string connectionString = "Data Source=:memory:";
+            string connectionString = @"Data Source=metrics.db; Version=3;Pooling=True;Max Pool Size=100;";
             var connection = new SQLiteConnection(connectionString);
             connection.Open();
             PrepareSchema(connection);
@@ -44,24 +49,30 @@ namespace MetricsAgent
             using (var command = new SQLiteCommand(connection))
             {                
                 command.CommandText = "DROP TABLE IF EXISTS cpumetrics";
+                command.ExecuteNonQuery();
                 command.CommandText = "DROP TABLE IF EXISTS hddmetrics";
+                command.ExecuteNonQuery();
                 command.CommandText = "DROP TABLE IF EXISTS rammetrics";
+                command.ExecuteNonQuery();
                 command.CommandText = "DROP TABLE IF EXISTS dotnetmetrics";
+                command.ExecuteNonQuery();
                 command.CommandText = "DROP TABLE IF EXISTS networkmetrics";
-
                 command.ExecuteNonQuery();
 
                 command.CommandText = @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY,
-                    value INT, time INT)";
+                    value INT, time LONG)";
+                command.ExecuteNonQuery();
                 command.CommandText = @"CREATE TABLE hddmetrics(id INTEGER PRIMARY KEY,
                     value INT, time INT)";
+                command.ExecuteNonQuery();
                 command.CommandText = @"CREATE TABLE rammetrics(id INTEGER PRIMARY KEY,
                     value INT, time INT)";
+                command.ExecuteNonQuery();
                 command.CommandText = @"CREATE TABLE dotnetmetrics(id INTEGER PRIMARY KEY,
                     value INT, time INT)";
+                command.ExecuteNonQuery();
                 command.CommandText = @"CREATE TABLE networkmetrics(id INTEGER PRIMARY KEY,
                     value INT, time INT)";
-
                 command.ExecuteNonQuery();
             }
         }

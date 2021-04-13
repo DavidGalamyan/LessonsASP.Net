@@ -1,5 +1,5 @@
 using MetricsAgent.Controllers;
-using MetricsAgent.Model;
+using MetricsAgent.DAL.Model;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -7,6 +7,8 @@ using Xunit;
 using MetricsAgent.Requests;
 using MetricsAgent.DAL.Interface;
 using System.Collections.Generic;
+using AutoMapper;
+using MetricsAgent;
 
 namespace MetricAgentTests
 {
@@ -30,9 +32,13 @@ namespace MetricAgentTests
 
         public DotNetControllerUnitTests()
         {
+            var myProfile = new MapperProfile();
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+            var mapper = new Mapper(configuration);
+
             _mock = new Mock<IDotNetMetricsRepository>();
             _mocklogger = new Mock<ILogger<DotNetMetricsController>>();
-            _controller = new DotNetMetricsController(_mocklogger.Object, _mock.Object);
+            _controller = new DotNetMetricsController(_mocklogger.Object, _mock.Object, mapper);
         }
 
         [Fact]

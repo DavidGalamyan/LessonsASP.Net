@@ -1,5 +1,6 @@
-﻿using MetricsAgent.DAL.Interface;
-using MetricsAgent.Model;
+﻿using AutoMapper;
+using MetricsAgent.DAL.Interface;
+using MetricsAgent.DAL.Model;
 using MetricsAgent.Requests;
 using MetricsAgent.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +16,14 @@ namespace MetricsAgent.Controllers
     {
         private readonly ILogger<HddMetricsController> _logger;
         private readonly IHddMetricsRepository _repository;
+        private readonly IMapper _mapper;
 
-        public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository)
+        public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в HddMetricsController");
             _repository = repository;
+            _mapper = mapper;
         }
 
 
@@ -36,20 +39,18 @@ namespace MetricsAgent.Controllers
             return Ok();
         }
 
-        [HttpGet("all")]
-        public IActionResult GetAll()
+        [HttpGet("getmetric")]
+        public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffsetModel)
         {
-            _logger.LogInformation($"GetAllHddMetric");
-            var metrics = _repository.GetAll();
-
+            _logger.LogInformation($"GetMetricsByTimeInterval: fromTime {dateTimeOffsetModel.fromTime},toTime {dateTimeOffsetModel.toTime}");
+            var metrics = _repository.GetByTimeInterval(dateTimeOffsetModel.fromTime, dateTimeOffsetModel.toTime);
             var response = new AllHddMetricsResponse()
             {
                 Metrics = new List<HddMetricDto>()
             };
-
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new HddMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(_mapper.Map<HddMetricDto>(metric));
             }
             return Ok(response);
         }
