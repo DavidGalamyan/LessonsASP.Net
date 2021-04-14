@@ -27,17 +27,6 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
-        {
-            _logger.LogInformation($"CreateMetricCpu (Request.Time :{request.Time}, Request.Value:{request.Value})");
-            _repository.Create(new CpuMetric
-            {
-                Time = request.Time,
-                Value = request.Value
-            }) ;
-            return Ok();
-        }
 
         [HttpGet("getmetric")]
         public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffset)

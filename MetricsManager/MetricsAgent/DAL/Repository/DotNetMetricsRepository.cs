@@ -15,7 +15,7 @@ namespace MetricsAgent.DAL.Repository
 
         public DotNetMetricsRepository()
         {
-            // добавляем парсилку типа TimeSpan в качестве подсказки для SQLite
+            // добавляем парсилку типа DateTimeOffset в качестве подсказки для SQLite
             SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
         public void Create(DotNetMetric item)

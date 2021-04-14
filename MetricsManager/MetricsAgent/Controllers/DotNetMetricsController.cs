@@ -26,18 +26,6 @@ namespace MetricsAgent.Controllers
             _repository = repository;
         }
 
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] DotNetMetricCreateRequest request)
-        {
-            _logger.LogInformation($"CreateDotNetMetric (Request.Time :{request.Time}, Request.Value:{request.Value})");
-            _repository.Create(new DotNetMetric
-            {
-                Time = request.Time,
-                Value = request.Value
-            });
-            return Ok();
-        }
-
 
         [HttpGet("getmetric")]
         public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffsetModel)

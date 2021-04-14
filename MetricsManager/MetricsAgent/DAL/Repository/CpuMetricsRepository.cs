@@ -16,7 +16,7 @@ namespace MetricsAgent.DAL.Repository
         //инжектируем соединение с базой данных в наш репозиторий через конструктор
         public CpuMetricsRepository()
         {
-            // добавляем парсилку типа TimeSpan в качестве подсказки для SQLite
+            // добавляем парсилку типа DateTimeOffset в качестве подсказки для SQLite
             SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
         public void Create(CpuMetric item)
@@ -43,7 +43,7 @@ namespace MetricsAgent.DAL.Repository
             
             using (var conncetion = new SQLiteConnection(ConnectionString))
             {
-                return conncetion.Query<CpuMetric>("SELECT * FROM cpumetrics WHERE (Time>=@fromTime AND Time<=@toTime)",
+                return conncetion.Query<CpuMetric>("SELECT * FROM cpumetrics WHERE (time>=@fromTime AND time<=@toTime)",
                   new
                   {
                       fromTime = fromTime.ToUnixTimeSeconds(),
