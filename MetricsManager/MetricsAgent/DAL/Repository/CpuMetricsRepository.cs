@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MetricsAgent.DAL.Interface;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Model;
 using System;
 using System.Collections.Generic;
@@ -11,17 +12,18 @@ namespace MetricsAgent.DAL.Repository
     public class CpuMetricsRepository : ICpuMetricsRepository
     {
         // строка подключения
-        private const string ConnectionString = @"Data Source=metrics.db; Version=3;Pooling=True;Max Pool Size=100;";
+        private ISqlSettingsProvider _sqliteConnection;
 
         //инжектируем соединение с базой данных в наш репозиторий через конструктор
-        public CpuMetricsRepository()
+        public CpuMetricsRepository(ISqlSettingsProvider sqliteConnection)
         {
+            _sqliteConnection = sqliteConnection;
             // добавляем парсилку типа DateTimeOffset в качестве подсказки для SQLite
             SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
         public void Create(CpuMetric item)
         {
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
                 //  запрос на вставку данных с плейсхолдерами для параметров
                 connection.Execute("INSERT INTO cpumetrics(value, time) VALUES(@value, @time)",
@@ -41,7 +43,7 @@ namespace MetricsAgent.DAL.Repository
         public IList<CpuMetric> GetByTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             
-            using (var conncetion = new SQLiteConnection(ConnectionString))
+            using (var conncetion = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
                 return conncetion.Query<CpuMetric>("SELECT * FROM cpumetrics WHERE (time>=@fromTime AND time<=@toTime)",
                   new

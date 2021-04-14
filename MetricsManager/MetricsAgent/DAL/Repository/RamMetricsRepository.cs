@@ -5,21 +5,23 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using Dapper;
 using System.Linq;
+using MetricsAgent.DAL.Interfaces;
 
 namespace MetricsAgent.DAL.Repository
 {
 
     public class RamMetricsRepository : IRamMetricsRepository
     {
-        private const string ConnectionString = @"Data Source=metrics.db;Version=3;Pooling=True;Max Pool Size=100;";
+        private ISqlSettingsProvider _sqliteConnection;
 
-        public RamMetricsRepository()
+        public RamMetricsRepository(ISqlSettingsProvider sqliteConnection)
         {
+            _sqliteConnection = sqliteConnection;
             SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
         public void Create(RamMetric item)
         {
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
                 //  запрос на вставку данных с плейсхолдерами для параметров
                 connection.Execute("INSERT INTO rammetrics(value, time) VALUES(@value, @time)",
@@ -39,7 +41,7 @@ namespace MetricsAgent.DAL.Repository
         public IList<RamMetric> GetByTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
 
-            using (var conncetion = new SQLiteConnection(ConnectionString))
+            using (var conncetion = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
                 return conncetion.Query<RamMetric>("SELECT * FROM rammetrics WHERE (Time>=@fromTime AND Time<=@toTime)",
                   new

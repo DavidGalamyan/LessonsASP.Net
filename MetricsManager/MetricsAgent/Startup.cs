@@ -1,6 +1,7 @@
 using AutoMapper;
 using FluentMigrator.Runner;
 using MetricsAgent.DAL.Interface;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.Jobs;
 using Microsoft.AspNetCore.Builder;
@@ -23,10 +24,11 @@ namespace MetricsAgent
 
         public IConfiguration Configuration { get; }
 
-        private readonly string _connectionString = @"Data Source=metrics.db; Version=3;Pooling=True;Max Pool Size=100;";
+        private readonly string _connectionSQLite = new SqlSettingsProvider().GetConnectionSQLite();
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {            
             var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
             var mapper = mapperConfiguration.CreateMapper();
             services.AddSingleton(mapper);
@@ -39,13 +41,14 @@ namespace MetricsAgent
                     // добавляем поддержку SQLite 
                     .AddSQLite()
                     // устанавливаем строку подключения
-                    .WithGlobalConnectionString(_connectionString)
+                    .WithGlobalConnectionString(_connectionSQLite)
                     // подсказываем где искать классы с миграциями
                     .ScanIn(typeof(Startup).Assembly).For.Migrations()
                 ).AddLogging(lb => lb
                     .AddFluentMigratorConsole());
 
-            services.AddControllers();            
+            services.AddControllers();
+            services.AddSingleton<ISqlSettingsProvider, SqlSettingsProvider>();
             services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>();
             services.AddSingleton<IDotNetMetricsRepository, DotNetMetricsRepository>();
             services.AddSingleton<IHddMetricsRepository, HddMetricsRepository>();
