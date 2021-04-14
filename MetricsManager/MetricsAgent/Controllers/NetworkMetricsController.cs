@@ -27,17 +27,6 @@ namespace MetricsAgent.Controllers
             _logger.LogDebug(1, "NLog встроен в NetworkMetricsController");
         }
 
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] NetworkMetricCreateRequest request)
-        {
-            _logger.LogInformation($"CreateNetworkMetric (Request.Time :{request.Time}, Request.Value:{request.Value})");
-            _repository.Create(new NetworkMetric
-            {
-                Time = request.Time,
-                Value = request.Value
-            });
-            return Ok();
-        }
 
         [HttpGet("getmetric")]
         public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffsetModel)

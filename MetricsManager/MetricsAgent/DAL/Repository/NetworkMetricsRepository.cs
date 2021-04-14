@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MetricsAgent.DAL.Interface;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Model;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,17 @@ namespace MetricsAgent.DAL.Repository
 {
     public class NetworkMetricsRepository : INetworkMetricsRepository
     {
-        private const string ConnectionString = @"Data Source=metrics.db;Version=3;Pooling=True;Max Pool Size=100;";
+        private ISqlSettingsProvider _sqliteConnection;
 
-        public NetworkMetricsRepository()
+        public NetworkMetricsRepository(ISqlSettingsProvider sqliteConnection)
         {
+            _sqliteConnection = sqliteConnection;
             // добавляем парсилку типа DateTimeOffset в качестве подсказки для SQLite
             SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
         }
         public void Create(NetworkMetric item)
         {
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
                 //  запрос на вставку данных с плейсхолдерами для параметров
                 connection.Execute("INSERT INTO networkmetrics(value, time) VALUES(@value, @time)",
@@ -39,7 +41,7 @@ namespace MetricsAgent.DAL.Repository
         public IList<NetworkMetric> GetByTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
 
-            using (var conncetion = new SQLiteConnection(ConnectionString))
+            using (var conncetion = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
                 return conncetion.Query<NetworkMetric>("SELECT * FROM networkmetrics WHERE (Time>=@fromTime AND Time<=@toTime)",
                   new

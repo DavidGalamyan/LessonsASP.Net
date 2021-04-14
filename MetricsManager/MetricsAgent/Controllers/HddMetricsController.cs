@@ -27,18 +27,6 @@ namespace MetricsAgent.Controllers
         }
 
 
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] HddMetricCreateRequest request)
-        {
-            _logger.LogInformation($"CreateHddMetric (Request.Time :{request.Time}, Request.Value:{request.Value})");
-            _repository.Create(new HddMetric
-            {
-                Time = request.Time,
-                Value = request.Value
-            });
-            return Ok();
-        }
-
         [HttpGet("getmetric")]
         public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffsetModel)
         {

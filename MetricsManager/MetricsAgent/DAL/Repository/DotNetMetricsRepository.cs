@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MetricsAgent.DAL.Interface;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Model;
 using System;
 using System.Collections.Generic;
@@ -11,16 +12,17 @@ namespace MetricsAgent.DAL.Repository
 
     public class DotNetMetricsRepository : IDotNetMetricsRepository
     {
-        private const string ConnectionString = @"Data Source=metrics.db; Version=3; Pooling=True;Max Poll Size=100;";
+        private ISqlSettingsProvider _sqliteConnection;
 
-        public DotNetMetricsRepository()
+        public DotNetMetricsRepository(ISqlSettingsProvider sqliteConnection)
         {
-            // добавляем парсилку типа TimeSpan в качестве подсказки для SQLite
+            // добавляем парсилку типа DateTimeOffset в качестве подсказки для SQLite
             SqlMapper.AddTypeHandler(new DateTimeOffsetHandler());
+            _sqliteConnection = sqliteConnection;
         }
         public void Create(DotNetMetric item)
         {
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
                 //  запрос на вставку данных с плейсхолдерами для параметров
                 connection.Execute("INSERT INTO dotnetmetrics(value, time) VALUES(@value, @time)",
@@ -40,7 +42,7 @@ namespace MetricsAgent.DAL.Repository
         public IList<DotNetMetric> GetByTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
 
-            using (var conncetion = new SQLiteConnection(ConnectionString))
+            using (var conncetion = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
                 return conncetion.Query<DotNetMetric>("SELECT * FROM dotnetmetrics WHERE (Time>=@fromTime AND Time<=@toTime)",
                   new
