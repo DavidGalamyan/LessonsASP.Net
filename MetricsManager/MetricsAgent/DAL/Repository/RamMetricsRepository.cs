@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using Dapper;
 using System.Linq;
-using MetricsAgent.DAL.Interfaces;
+using MetricsTool.SQLiteConnectionSettings;
 
 namespace MetricsAgent.DAL.Repository
 {

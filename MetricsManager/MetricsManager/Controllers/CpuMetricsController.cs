@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MetricsTool;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace MetricsManager.Controllers
 {
@@ -26,6 +28,20 @@ namespace MetricsManager.Controllers
             [FromRoute] TimeSpan toTime)
         {
             _logger.LogInformation($"GetMetricsFromAgent:agentId {agentId},fromTime {fromTime},toTime {toTime}");
+            //var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:50343/api/cpumetrics/from/1/to/999999");
+            //request.Headers.Add("Accept", "application/vnd.github.v3+json");
+            //var client = clientFactory.CreateClient();
+            //HttpResponseMessage response = client.SendAsync(request).Result;
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    using var responseStream = response.Content.ReadAsStreamAsync().Result;
+            //    var metricsResponse = JsonSerializer.DeserializeAsync
+            //        <CpuMetricsResponse>(responseStream).Result;
+            //}
+            //else
+            //{
+            //    // ошибка при получении ответа
+            //}
             return Ok();
         }
 

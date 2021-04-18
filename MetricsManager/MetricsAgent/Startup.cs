@@ -1,7 +1,7 @@
 using AutoMapper;
 using FluentMigrator.Runner;
 using MetricsAgent.DAL.Interface;
-using MetricsAgent.DAL.Interfaces;
+using MetricsTool.SQLiteConnectionSettings;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.Jobs;
 using Microsoft.AspNetCore.Builder;
@@ -54,7 +54,7 @@ namespace MetricsAgent
             services.AddSingleton<IHddMetricsRepository, HddMetricsRepository>();
             services.AddSingleton<IRamMetricsRepository, RamMetricsRepository>();
             services.AddSingleton<INetworkMetricsRepository, NetworkMetricsRepository>();
-
+                       
             services.AddHostedService<QuartzHostedService>();
 
             services.AddSingleton<CpuMetricsJob>();

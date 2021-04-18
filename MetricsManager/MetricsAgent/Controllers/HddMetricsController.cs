@@ -27,11 +27,11 @@ namespace MetricsAgent.Controllers
         }
 
 
-        [HttpGet("getmetric")]
+        [HttpGet]
         public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffsetModel)
         {
-            _logger.LogInformation($"GetMetricsByTimeInterval: fromTime {dateTimeOffsetModel.fromTime},toTime {dateTimeOffsetModel.toTime}");
-            var metrics = _repository.GetByTimeInterval(dateTimeOffsetModel.fromTime, dateTimeOffsetModel.toTime);
+            _logger.LogInformation($"GetMetricsByTimeInterval: fromTime {dateTimeOffsetModel.FromTime},toTime {dateTimeOffsetModel.ToTime}");
+            var metrics = _repository.GetByTimeInterval(dateTimeOffsetModel.FromTime, dateTimeOffsetModel.ToTime);
             var response = new AllHddMetricsResponse()
             {
                 Metrics = new List<HddMetricDto>()
@@ -41,13 +41,6 @@ namespace MetricsAgent.Controllers
                 response.Metrics.Add(_mapper.Map<HddMetricDto>(metric));
             }
             return Ok(response);
-        }
-
-        [HttpGet("left")]
-        public IActionResult GetMetrics()
-        {
-            _logger.LogInformation($"GetMetricsFrom: OK");
-            return Ok();
         }
     }
 }

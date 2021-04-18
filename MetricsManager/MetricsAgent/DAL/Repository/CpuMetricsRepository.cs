@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using MetricsAgent.DAL.Interface;
-using MetricsAgent.DAL.Interfaces;
+using MetricsTool.SQLiteConnectionSettings;
 using MetricsAgent.DAL.Model;
 using System;
 using System.Collections.Generic;
