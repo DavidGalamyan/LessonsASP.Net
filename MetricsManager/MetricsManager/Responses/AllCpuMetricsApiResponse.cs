@@ -7,5 +7,14 @@ namespace MetricsManager.Responses
 {
     public class AllCpuMetricsApiResponse
     {
+        List<CpuMetricsApiDto> Metrics { get; set; }
+    }
+    public class CpuMetricsApiDto
+    {
+        public int Id { get; set; }
+        
+        public int Value { get; set; }
+        
+        public DateTimeOffset DateTime { get; set; }  
     }
 }

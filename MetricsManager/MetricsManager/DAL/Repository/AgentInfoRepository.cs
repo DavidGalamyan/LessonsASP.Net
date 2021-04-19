@@ -26,13 +26,12 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
                 {
-                    connection.Execute("INSERT INTO agentsbase(agentAddress,agentId) VALUES(@agentAddress,@agentId)",
+                    connection.Execute("INSERT INTO agentsbase (AgentAddress) VALUES (@AgentAddress)",
                                        // анонимный объект с параметрами запроса
                                        new
                                        {
-                                           agentId = agentInfoRequest.AgentId,
-                                           agentAddress = agentInfoRequest.AgentAddress
-                                       });
+                                           AgentAddress = agentInfoRequest.AgentAddress
+                                       }); 
                 }
                 return true;
             }

@@ -7,8 +7,6 @@ namespace MetricsManager.Requests.ControllerRequests
 {
     public class AgentInfoRequest
     {
-        public int AgentId { get; set; }
-
         public string AgentAddress { get; set; }
     }
 }

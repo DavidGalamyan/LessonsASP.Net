@@ -43,7 +43,7 @@ namespace MetricsAgent.DAL.Repository
 
             using (var conncetion = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
-                return conncetion.Query<RamMetric>("SELECT * FROM rammetrics WHERE (Time>=@fromTime AND Time<=@toTime)",
+                return conncetion.Query<RamMetric>("SELECT * FROM rammetrics WHERE (time>=@fromTime AND time<=@toTime)",
                   new
                   {
                       fromTime = fromTime.ToUnixTimeSeconds(),
