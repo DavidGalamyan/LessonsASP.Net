@@ -13,8 +13,6 @@ namespace MetricsManager.DAL.Interfaces
 
         AllNetworkMetricsApiResponse GetAllNetworkMetrics(GetAllNetworkMetricsApiRequest request);
 
-        DonNetMetricsApiResponse GetDonNetMetrics(DonNetHeapMetrisApiRequest request);
-
-        
+        AllDotNetMetricsApiResponse GetDonNetMetrics(GetAllDotNetMetrisApiRequest request);
     }
 }

@@ -16,9 +16,11 @@ namespace MetricsManager.Controllers
     public class CpuMetricsController : ControllerBase
     {
         private readonly ILogger<CpuMetricsController> _logger;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public CpuMetricsController(ILogger<CpuMetricsController> logger)
+        public CpuMetricsController(ILogger<CpuMetricsController> logger, IHttpClientFactory clientFactory)
         {
+            _clientFactory = clientFactory;
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
         }
@@ -28,20 +30,6 @@ namespace MetricsManager.Controllers
             [FromRoute] TimeSpan toTime)
         {
             _logger.LogInformation($"GetMetricsFromAgent:agentId {agentId},fromTime {fromTime},toTime {toTime}");
-            //var request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:50343/api/cpumetrics/from/1/to/999999");
-            //request.Headers.Add("Accept", "application/vnd.github.v3+json");
-            //var client = clientFactory.CreateClient();
-            //HttpResponseMessage response = client.SendAsync(request).Result;
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    using var responseStream = response.Content.ReadAsStreamAsync().Result;
-            //    var metricsResponse = JsonSerializer.DeserializeAsync
-            //        <CpuMetricsResponse>(responseStream).Result;
-            //}
-            //else
-            //{
-            //    // ошибка при получении ответа
-            //}
             return Ok();
         }
 

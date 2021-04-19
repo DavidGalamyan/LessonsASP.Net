@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MetricsManager.DAL.Interfaces;
+using MetricsManager.DAL.Models;
+using MetricsManager.Requests.ControllerRequests;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,36 +15,42 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class AgentsController : ControllerBase
     {
-        private readonly List<AgentInfo> _agentsList;
-
         private readonly ILogger<AgentsController> _logger;
+        private IAgentInfoRepository _repository;
 
-        public AgentsController(List<AgentInfo> agentsList, ILogger<AgentsController> logger) 
+        public AgentsController(ILogger<AgentsController> logger, IAgentInfoRepository repository) 
         {
             _logger = logger;
-            _agentsList = agentsList;
+            _repository = repository;
         }
 
-        [HttpPost("register")]
-        public IActionResult RegisterAgent([FromBody] AgentInfo agentInfo)
+        [HttpPost]
+        public IActionResult RegisterAgent([FromBody] AgentInfoRequest agent)
         {
-            _logger.LogInformation($"RefisterAgent:agentId {agentInfo.AgentId}, agentURI {agentInfo.AgentAddress}");
-            return Ok();
+            _logger.LogInformation($"RefisterAgent:agentAddress {agent.AgentAddress}");
+            if (_repository.RegisterAgent(agent))
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("Такой агент уже добавлен");
+            }
         }
 
-        [HttpPut("enable/{agentId}")]
-        public IActionResult EnableAgentById([FromRoute] int agentId)
+        // для удобства отладки
+        [HttpGet]
+        public IActionResult GetAllAgents()
         {
-            _logger.LogInformation($"EnableAgentById:agentId {agentId}");
-            return Ok();
-        }
+            IList<AgentInfo> agents = _repository.GetAllAgents();
+            var response = new List<AgentInfo>();
+            
 
-        [HttpPut("disable/{agentId}")]
-        public IActionResult DisableAgentById([FromRoute] int agentId)
-        {
-            _logger.LogInformation($"DisableAgentById:agentId {agentId}");
-            return Ok();
+            foreach (AgentInfo agent in agents)
+            {
+                response.Add(agent);
+            }
+            return Ok(response);
         }
-
     }
 }

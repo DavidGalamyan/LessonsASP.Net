@@ -36,12 +36,10 @@ namespace MetricsManager
                     // подсказываем где искать классы с миграциями
                     .ScanIn(typeof(Startup).Assembly).For.Migrations()
                 ).AddLogging(lb => lb
-                    .AddFluentMigratorConsole());
-
-            services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>()
-                    .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1000)));
+                    .AddFluentMigratorConsole());            
             services.AddControllers();
-            services.AddSingleton<List<AgentInfo>>();
+            services.AddSingleton<ISqlSettingsProvider, SqlSettingsProvider>();
+            services.AddSingleton<IAgentInfoRepository, AgentInfoRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

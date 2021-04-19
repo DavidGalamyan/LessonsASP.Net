@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsManager.Responses
+namespace MetricsManager.Requests
 {
-    public class DonNetMetricsApiResponse
+    public class GetAllDotNetMetrisApiRequest
     {
     }
 }
