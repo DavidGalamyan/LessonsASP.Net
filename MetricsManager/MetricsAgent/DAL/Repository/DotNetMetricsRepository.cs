@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
+using MetricsTool;
 
 namespace MetricsAgent.DAL.Repository
 {
@@ -44,7 +45,7 @@ namespace MetricsAgent.DAL.Repository
 
             using (var conncetion = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
-                return conncetion.Query<DotNetMetric>("SELECT * FROM dotnetmetrics WHERE (time>=@fromTime AND time<=@toTime)",
+                return conncetion.Query<DotNetMetric>("SELECT * FROM dotnetmetrics WHERE (time>@fromTime AND time<@toTime)",
                   new
                   {
                       fromTime = fromTime.ToUnixTimeSeconds(),

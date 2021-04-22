@@ -40,6 +40,8 @@ namespace MetricsManager
             services.AddControllers();
             services.AddSingleton<ISqlSettingsProvider, SqlSettingsProvider>();
             services.AddSingleton<IAgentInfoRepository, AgentInfoRepository>();
+            services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>()
+                    .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1000)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

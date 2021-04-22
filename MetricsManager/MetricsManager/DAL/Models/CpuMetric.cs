@@ -3,13 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsManager.Responses
+namespace MetricsManager.DAL.Models
 {
-    public class AllHddMetricsApiResponse
-    {
-        public IList<HddMetricsApiDto> Metrics { get; set; }
-    }
-    public class HddMetricsApiDto
+    public class CpuMetric
     {
         public int Id { get; set; }
 

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
+using MetricsTool;
 
 namespace MetricsAgent.DAL.Repository
 {
@@ -33,19 +34,17 @@ namespace MetricsAgent.DAL.Repository
                         // value подставится на место "@value" в строке запроса
                         // значение запишется из поля Value объекта item
                         value = item.Value,
-
                         // записываем в поле time количество секунд
                         time = item.Time.ToUnixTimeSeconds()
-                    }) ;
+                    });
             }
         }
-
         public IList<CpuMetric> GetByTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             
             using (var conncetion = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
-                return conncetion.Query<CpuMetric>("SELECT * FROM cpumetrics WHERE (time>=@fromTime AND time<=@toTime)",
+                return conncetion.Query<CpuMetric>("SELECT * FROM cpumetrics WHERE (time>@fromTime AND time<@toTime)",
                   new
                   {
                       fromTime = fromTime.ToUnixTimeSeconds(),

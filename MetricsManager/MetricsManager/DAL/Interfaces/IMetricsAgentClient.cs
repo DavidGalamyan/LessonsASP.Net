@@ -5,7 +5,7 @@ namespace MetricsManager.DAL.Interfaces
 {
     public interface IMetricsAgentClient
     {
-        AllCpuMetricsApiResponse GetCpuMetrics(GetAllCpuMetricsApiRequest request);
+        AllCpuMetricsApiResponse GetAllCpuMetrics(GetAllCpuMetricsApiRequest request);
 
         AllHddMetricsApiResponse GetAllHddMetrics(GetAllHddMetricsApiRequest request);
 
@@ -13,6 +13,6 @@ namespace MetricsManager.DAL.Interfaces
 
         AllNetworkMetricsApiResponse GetAllNetworkMetrics(GetAllNetworkMetricsApiRequest request);
 
-        AllDotNetMetricsApiResponse GetDonNetMetrics(GetAllDotNetMetrisApiRequest request);
+        AllDotNetMetricsApiResponse GetAllDotNetMetrics(GetAllDotNetMetricsApiRequest request);
     }
 }

@@ -28,11 +28,11 @@ namespace MetricsAgent.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffset)
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetricsByTimeInterval([FromRoute] DateTimeOffset fromTime,[FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation($"GetMetricsByTimeInterval: fromTime {dateTimeOffset.FromTime},toTime {dateTimeOffset.ToTime}");
-            var metrics = _repository.GetByTimeInterval(dateTimeOffset.FromTime, dateTimeOffset.ToTime);
+            _logger.LogInformation($"GetMetricsByTimeInterval: fromTime {fromTime},toTime {toTime}");
+            var metrics = _repository.GetByTimeInterval(fromTime, toTime);
             var response = new AllCpuMetricsResponse()
             {
                 Metrics = new List<CpuMetricDto>()

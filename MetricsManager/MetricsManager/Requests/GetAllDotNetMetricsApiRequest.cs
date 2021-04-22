@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsAgent.Requests
+namespace MetricsManager.Requests
 {
-    public class MetricsFilterRequest
+    public class GetAllDotNetMetricsApiRequest
     {
         public DateTimeOffset FromTime { get; set; }
 
         public DateTimeOffset ToTime { get; set; }
+
+        public string AgentAddress { get; set; }
     }
 }

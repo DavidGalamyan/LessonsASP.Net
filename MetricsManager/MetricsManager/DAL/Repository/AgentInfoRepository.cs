@@ -52,7 +52,7 @@ namespace MetricsManager.DAL.Repository
             //Если такого агента еще нет в базе, вернется null
             using (var connection = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
-                return connection.QueryFirstOrDefault<AgentInfo>("SELECT * FROM agentsbase WHERE agentAddress=@agentAddress",
+                return connection.QueryFirstOrDefault<AgentInfo>($"SELECT * FROM agentsbase WHERE agentAddress={agentCheck.AgentAddress}",
                  new
                  {
                      agentAddress = agentCheck.AgentAddress
