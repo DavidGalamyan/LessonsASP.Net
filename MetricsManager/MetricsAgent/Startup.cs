@@ -87,17 +87,17 @@ namespace MetricsAgent
                     Version = "v1",
                     Title = "API сервиса агента сбора метрик",
                     Description = "Тут можно поиграть с api нашего сервиса",
-                    TermsOfService = new Uri("https://example.com/terms"),
+                    TermsOfService = new Uri(""),
                     Contact = new OpenApiContact
                     {
-                        Name = "Kadyrov",
+                        Name = "David",
                         Email = string.Empty,
-                        Url = new Uri("https://kremlin.ru"),
+                        Url = new Uri(""),
                     },
                     License = new OpenApiLicense
                     {
                         Name = "можно указать под какой лицензией все опубликовано",
-                        Url = new Uri("https://example.com/license"),
+                        Url = new Uri(""),
                     }
                 });
             });

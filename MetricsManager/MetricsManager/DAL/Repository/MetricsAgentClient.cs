@@ -2,7 +2,6 @@
 using MetricsManager.Requests;
 using MetricsManager.Responses;
 using Microsoft.Extensions.Logging;
-using NLog;
 using System;
 using System.Net.Http;
 using System.Text.Json;
@@ -75,7 +74,6 @@ namespace MetricsManager.DAL.Repository
             try
             {
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
-
                 using var responseStream = response.Content.ReadAsStreamAsync().Result;
                 return JsonSerializer.DeserializeAsync<AllCpuMetricsApiResponse>(responseStream, 
                     new JsonSerializerOptions { PropertyNameCaseInsensitive = true }).Result;

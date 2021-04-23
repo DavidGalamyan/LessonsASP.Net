@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using MetricsManager.DAL.Interfaces;
+using MetricsManager.DAL.Models;
 using MetricsManager.Responses.Controller;
 using MetricsTool;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MetricsManager.Controllers
 {
@@ -46,7 +48,8 @@ namespace MetricsManager.Controllers
             [FromRoute] DateTimeOffset toTime, [FromRoute] Percentile percentile)
         {
             _logger.LogInformation($"GetMetricsByPercentileFromAgent:agentId {agentId},fromTime {fromTime},toTime {toTime},Percentile {percentile}");
-            return Ok();
+            var metrics = _repository.GetByAgentTimeInterval(fromTime, toTime, agentId);
+            return Ok(GetPercentile(metrics.ToList(), percentile));
         }
 
         [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
@@ -70,8 +73,36 @@ namespace MetricsManager.Controllers
             [FromRoute] Percentile percentile)
         {
             _logger.LogInformation($"GetMetricsByPercentileFromAllCluster:fromTime {fromTime}, toTime {toTime}, Percenrile {percentile}");
-            var response = _repository.GetByTimeInterval(fromTime, toTime);
-            return Ok(response);
+            var metrics = _repository.GetByTimeInterval(fromTime, toTime).OrderBy(metrics => metrics.Value);            
+            return Ok(GetPercentile(metrics.ToList(), percentile));
+        }
+
+        private static int GetPercentile(List<CpuMetric> orderedMetrics, Percentile percentile)
+        {
+            if (!orderedMetrics.Any())
+            {
+                return 0;
+            }
+            int index = 0;
+            switch (percentile)
+            {
+                case Percentile.Median:
+                    index = (int)(orderedMetrics.Count() / 2);
+                    break;
+                case Percentile.P75:
+                    index = (int)(orderedMetrics.Count() * 0.75);
+                    break;
+                case Percentile.P90:
+                    index = (int)(orderedMetrics.Count() * 0.90);
+                    break;
+                case Percentile.P95:
+                    index = (int)(orderedMetrics.Count() * 0.95);
+                    break;
+                case Percentile.P99:
+                    index = (int)(orderedMetrics.Count() * 0.99);
+                    break;
+            }
+            return orderedMetrics.ElementAt(index).Value;
         }
     }
 }
