@@ -18,5 +18,10 @@ namespace MetricsManager.DAL.Repository
         {
             throw new NotImplementedException();
         }
+
+        public NetworkMetric GetLastDateTimeFromBase(int agentId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

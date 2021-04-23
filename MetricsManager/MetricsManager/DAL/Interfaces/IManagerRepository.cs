@@ -10,6 +10,8 @@ namespace MetricsManager.DAL.Interfaces
         IList<T> GetByTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime);
 
         void Create(IList<T> listMetric);
+
+        T GetLastDateTimeFromBase(int agentId);
     }
 
 }

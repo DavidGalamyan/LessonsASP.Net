@@ -18,5 +18,10 @@ namespace MetricsManager.DAL.Repository
         {
             throw new NotImplementedException();
         }
+
+        public HddMetric GetLastDateTimeFromBase(int agentId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,5 +1,8 @@
-﻿using MetricsManager.DAL.Interfaces;
+﻿using AutoMapper;
+using MetricsManager.DAL.Interfaces;
 using MetricsManager.DAL.Models;
+using MetricsManager.Jobs.PropertieJob;
+using MetricsManager.Requests;
 using MetricsTool.SQLiteConnectionSettings;
 using Quartz;
 using System;
@@ -12,18 +15,44 @@ namespace MetricsManager.Jobs
     [DisallowConcurrentExecution]
     public class CollectingCpuMetricsFromAgentsJob : IJob
     {
-        private ISqlSettingsProvider _sqliteConnection;
-        private IAgentInfoRepository _agentRepository;
-        private IManagerCpuMetricsRepository _repository;
-        public CollectingCpuMetricsFromAgentsJob(ISqlSettingsProvider sqliteConnection, IAgentInfoRepository agentRepository, IManagerCpuMetricsRepository repository)
-        {
-            _sqliteConnection = sqliteConnection;
+        private readonly IAgentInfoRepository _agentRepository;
+        private readonly IManagerCpuMetricsRepository _repository;
+        private readonly IMetricsAgentClient _metricsAgentClient;
+        private readonly IMapper _mapper;
+        public CollectingCpuMetricsFromAgentsJob(IAgentInfoRepository agentRepository,IManagerCpuMetricsRepository repository,
+                                                 IMetricsAgentClient metricsAgentClient,IMapper mapper)
+        {            
             _agentRepository = agentRepository;
             _repository = repository;
+            _metricsAgentClient = metricsAgentClient;
+            _mapper = mapper;
         }
         public Task Execute(IJobExecutionContext context)
         {
-            throw new NotImplementedException();
+            var agentList = _agentRepository.GetAllAgents();
+            foreach (var agent in agentList)
+            {
+                var lastRecordTime = UsefulMethod.CheckDateTime(_repository.GetLastDateTimeFromBase(agent.AgentId).DateTime);
+                var request = new GetAllCpuMetricsApiRequest()
+                {
+                    AgentAddress = agent.AgentAddress,
+                    FromTime = lastRecordTime,
+                    ToTime = DateTimeOffset.UtcNow
+                };
+                var response = _metricsAgentClient.GetAllCpuMetrics(request);
+                if (response != null)
+                {
+                    var metricList = new List<CpuMetric>();
+                    foreach (var metric in response.Metrics)
+                    {
+                        var convertedMetric = _mapper.Map<CpuMetric>(metric);
+                        convertedMetric.AgentId = agent.AgentId;
+                        metricList.Add(convertedMetric);
+                    }
+                    _repository.Create(metricList);
+                }
+            }
+            return Task.CompletedTask;
         }
     }
 }

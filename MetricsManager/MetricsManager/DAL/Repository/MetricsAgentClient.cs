@@ -1,14 +1,10 @@
 ﻿using MetricsManager.DAL.Interfaces;
 using MetricsManager.Requests;
 using MetricsManager.Responses;
-using Microsoft.Extensions.Logging;
+using NLog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace MetricsManager.DAL.Repository
 {
@@ -24,7 +20,7 @@ namespace MetricsManager.DAL.Repository
         }
         public AllHddMetricsApiResponse GetAllHddMetrics(GetAllHddMetricsApiRequest request)
         {            
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/hdd/from/{request.FromTime}/to/{request.ToTime}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/hdd/from/{request.FromTime.ToString("O")}/to/{request.ToTime.ToString("O")}");
             try
             {
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
@@ -34,13 +30,13 @@ namespace MetricsManager.DAL.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                 _logger.Error(ex,"Чет пошло не так");
             }
             return null;
         }
         public AllNetworkMetricsApiResponse GetAllNetworkMetrics(GetAllNetworkMetricsApiRequest request)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/network/from/{request.FromTime}/to/{request.ToTime}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/network/from/{request.FromTime.ToString("O")}/to/{request.ToTime.ToString("O")}");
             try
             {
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
@@ -50,13 +46,13 @@ namespace MetricsManager.DAL.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.Error(ex, "Чет пошло не так");
             }
             return null;
         }
         public AllRamMetricsApiResponse GetAllRamMetrics(GetAllRamMetricsApiRequest request)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/ram/from/{request.FromTime}/to/{request.ToTime}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/ram/from/{request.FromTime.ToString("O")}/to/{request.ToTime.ToString("O")}");
             try
             {
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
@@ -66,13 +62,15 @@ namespace MetricsManager.DAL.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.Error(ex, "Чет пошло не так");
             }
             return null;
         }
         public AllCpuMetricsApiResponse GetAllCpuMetrics(GetAllCpuMetricsApiRequest request)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/cpu/from/{request.FromTime}/to/{request.ToTime}");
+            var fromParameter = request.FromTime.ToString("O");
+            var toParameter = request.ToTime.ToString("O");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/cpu/from/{fromParameter}/to/{toParameter}");
             try
             {
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
@@ -82,13 +80,13 @@ namespace MetricsManager.DAL.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.Error(ex, "Чет пошло не так");
             }
             return null;
         }
         public AllDotNetMetricsApiResponse GetAllDotNetMetrics(GetAllDotNetMetricsApiRequest request)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/dotnet/from/{request.FromTime}/to/{request.ToTime}");
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/dotnet/from/{request.FromTime.ToString("O")}/to/{request.ToTime.ToString("O")}");
             try
             {
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
@@ -98,7 +96,7 @@ namespace MetricsManager.DAL.Repository
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.Error(ex, "Чет пошло не так");
             }
             return null;
         }

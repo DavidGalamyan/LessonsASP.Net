@@ -7,7 +7,7 @@ namespace MetricsManager.Responses
 {
     public class AllDotNetMetricsApiResponse
     {
-        List<DotNetMetricsApiDto> Metrics { get; set; }
+        public IList<DotNetMetricsApiDto> Metrics { get; set; }
     }
     public class DotNetMetricsApiDto
     {

@@ -7,7 +7,7 @@ namespace MetricsManager.Responses
 {
     public class AllRamMetricsApiResponse
     {
-        List<RamMetricsApiDto> Metrics { get; set; }
+        public IList<RamMetricsApiDto> Metrics { get; set; }
     }
     public class RamMetricsApiDto
     {

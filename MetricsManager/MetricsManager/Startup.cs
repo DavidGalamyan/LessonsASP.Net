@@ -4,12 +4,17 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Collections.Generic;
+using MetricsManager.Jobs.ProperieJob;
 using MetricsTool.SQLiteConnectionSettings;
 using MetricsManager.DAL.Repository;
 using MetricsManager.DAL.Interfaces;
 using Polly;
 using System;
+using Quartz.Spi;
+using Quartz;
+using Quartz.Impl;
+using MetricsManager.Jobs;
+using AutoMapper;
 
 namespace MetricsManager
 {
@@ -26,6 +31,9 @@ namespace MetricsManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
@@ -38,10 +46,27 @@ namespace MetricsManager
                 ).AddLogging(lb => lb
                     .AddFluentMigratorConsole());            
             services.AddControllers();
+
+            services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>()
+        .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1000)));
+
             services.AddSingleton<ISqlSettingsProvider, SqlSettingsProvider>();
             services.AddSingleton<IAgentInfoRepository, AgentInfoRepository>();
-            services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>()
-                    .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1000)));
+            services.AddSingleton<IManagerCpuMetricsRepository, ManagerCpuMetricsRepository>();
+            services.AddSingleton<IManagerDotNetMetricsRepository, ManagerDotNetMetricsRepository>();
+            services.AddSingleton<IManagerHddMetricsRepository, ManagerHddMetricsRepository>();
+            services.AddSingleton<IManagerNetworkMetricsRepository, ManagerNetworkMetricsRepository>();
+            services.AddSingleton<IManagerRamMetricsRepository, ManagerRamMetricsRepository>();
+
+            services.AddHostedService<QuartzHostedService>();
+            services.AddSingleton<IJobFactory, SingletonJobFactory>();
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+            // добавляем нашу задачу
+            services.AddSingleton<CollectingCpuMetricsFromAgentsJob>();
+            services.AddSingleton(new JobScheduleDto(
+                jobType: typeof(CollectingCpuMetricsFromAgentsJob),
+                cronExpression: "0/5 * * * * ?"));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,15 +2,12 @@
 using Quartz;
 using Quartz.Spi;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MetricsManager.Jobs.ProperieJob
 {
     public class SingletonJobFactory : IJobFactory
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceProvider _serviceProvider;        
         public SingletonJobFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;

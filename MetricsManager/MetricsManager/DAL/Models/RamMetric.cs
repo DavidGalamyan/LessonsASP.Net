@@ -7,5 +7,12 @@ namespace MetricsManager.DAL.Models
 {
     public class RamMetric
     {
+        public long Id { get; set; }
+
+        public int AgentId { get; set; }
+
+        public int Value { get; set; }
+
+        public DateTimeOffset DateTime { get; set; }
     }
 }

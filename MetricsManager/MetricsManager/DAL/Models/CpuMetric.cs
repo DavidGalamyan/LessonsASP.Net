@@ -7,7 +7,9 @@ namespace MetricsManager.DAL.Models
 {
     public class CpuMetric
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
+
+        public int AgentId { get; set; }
 
         public int Value { get; set; }
 
