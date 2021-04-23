@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsManager.Responses
+namespace MetricsManager.Responses.Controller
 {
 
-    public class AllCpuMetricsApiResponse
+    public class AllNetworkMetricsResponse
     {
-        public List<CpuMetricApiDto> Metrics { get; set; }
+        public List<NetworkMetricDto> Metrics { get; set; }
     }
 
-    public class CpuMetricApiDto
+    public class NetworkMetricDto
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         public int Value { get; set; }
 

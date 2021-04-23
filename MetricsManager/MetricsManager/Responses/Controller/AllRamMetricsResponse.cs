@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsManager.Responses
+namespace MetricsManager.Responses.Controller
 {
-    public class AllDotNetMetricsApiResponse
+
+    public class AllRamMetricsResponse
     {
-        public List<DotNetMetricApiDto> Metrics { get; set; }
+        public List<RamMetricDto> Metrics { get; set; }
     }
-    public class DotNetMetricApiDto
+
+    public class RamMetricDto
     {
         public long Id { get; set; }
 

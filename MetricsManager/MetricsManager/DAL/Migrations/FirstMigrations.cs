@@ -22,7 +22,7 @@ namespace MetricsManager.DAL.Migrations
         public override void Up()
         {
             Create.Table("agentsbase")
-                  .WithColumn("AgentId").AsInt64().PrimaryKey().Identity()
+                  .WithColumn("AgentId").AsInt32().PrimaryKey().Identity()
                   .WithColumn("AgentAddress").AsString();
             Create.Table("cpumetrics")
                   .WithColumn("Id").AsInt64().PrimaryKey().Identity()

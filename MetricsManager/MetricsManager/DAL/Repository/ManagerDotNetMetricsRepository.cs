@@ -14,6 +14,11 @@ namespace MetricsManager.DAL.Repository
             throw new NotImplementedException();
         }
 
+        public IList<DotNetMetric> GetByAgentTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime, int agent)
+        {
+            throw new NotImplementedException();
+        }
+
         public IList<DotNetMetric> GetByTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
             throw new NotImplementedException();

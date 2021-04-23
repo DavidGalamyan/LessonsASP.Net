@@ -30,9 +30,31 @@ namespace MetricsManager.DAL.Repository
             }
         }
 
+        public IList<CpuMetric> GetByAgentTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime, int agentId)
+        {
+            using (var connection = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
+            {
+                return connection.Query<CpuMetric>("SELECT * FROM cpumetrics WHERE (agentId==@agentId AND time>@fromTime AND time<@toTime)",
+                    new
+                    {
+                        fromTime = fromTime.ToUnixTimeSeconds(),
+                        toTime = toTime.ToUnixTimeSeconds(),
+                        agentId = agentId
+                    }).ToList();
+            }
+        }
+
         public IList<CpuMetric> GetByTimeInterval(DateTimeOffset fromTime, DateTimeOffset toTime)
         {
-            throw new NotImplementedException();
+            using (var conncetion = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
+            {
+                return conncetion.Query<CpuMetric>("SELECT * FROM cpumetrics WHERE (time>=@fromTime AND time<@toTime)",
+                  new
+                  {
+                      fromTime = fromTime.ToUnixTimeSeconds(),
+                      toTime = toTime.ToUnixTimeSeconds()
+                  }).ToList();
+            }
         }
 
         public CpuMetric GetLastDateTimeFromBase(int agentId)

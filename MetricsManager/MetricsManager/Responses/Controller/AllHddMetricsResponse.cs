@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsManager.Responses
+namespace MetricsManager.Responses.Controller
 {
-    public class AllDotNetMetricsApiResponse
+
+    public class AllHddMetricsResponse
     {
-        public List<DotNetMetricApiDto> Metrics { get; set; }
+        public List<HddMetricDto> Metrics { get; set; }
     }
-    public class DotNetMetricApiDto
+
+    public class HddMetricDto
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         public int Value { get; set; }
 

@@ -7,14 +7,14 @@ namespace MetricsManager.Responses
 {
     public class AllHddMetricsApiResponse
     {
-        public IList<HddMetricsApiDto> Metrics { get; set; }
+        public List<HddMetricApiDto> Metrics { get; set; }
     }
-    public class HddMetricsApiDto
+    public class HddMetricApiDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public int Value { get; set; }
 
-        public DateTimeOffset DateTime { get; set; }
+        public DateTimeOffset Time { get; set; }
     }
 }

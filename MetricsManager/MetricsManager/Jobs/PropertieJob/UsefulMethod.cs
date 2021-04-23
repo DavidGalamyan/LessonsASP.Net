@@ -12,7 +12,7 @@ namespace MetricsManager.Jobs.PropertieJob
             var minDateTime = new DateTimeOffset(1970, 01, 01, 00, 0, 0,TimeSpan.Zero) ;
             if (time > minDateTime)
             {
-                return time;
+                return time.DateTime;
             }
             else
             {

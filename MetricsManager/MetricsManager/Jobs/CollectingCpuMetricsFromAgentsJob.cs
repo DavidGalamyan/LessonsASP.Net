@@ -3,11 +3,9 @@ using MetricsManager.DAL.Interfaces;
 using MetricsManager.DAL.Models;
 using MetricsManager.Jobs.PropertieJob;
 using MetricsManager.Requests;
-using MetricsTool.SQLiteConnectionSettings;
 using Quartz;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MetricsManager.Jobs
@@ -36,11 +34,11 @@ namespace MetricsManager.Jobs
                 var request = new GetAllCpuMetricsApiRequest()
                 {
                     AgentAddress = agent.AgentAddress,
-                    FromTime = lastRecordTime,
-                    ToTime = DateTimeOffset.UtcNow
+                    FromTime = lastRecordTime.DateTime,
+                    ToTime = DateTime.UtcNow
                 };
                 var response = _metricsAgentClient.GetAllCpuMetrics(request);
-                if (response != null)
+                if (response.Metrics != null && response != null)
                 {
                     var metricList = new List<CpuMetric>();
                     foreach (var metric in response.Metrics)

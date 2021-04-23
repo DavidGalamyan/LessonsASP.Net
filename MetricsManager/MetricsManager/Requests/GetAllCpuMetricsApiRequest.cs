@@ -7,9 +7,9 @@ namespace MetricsManager.Requests
 {
     public class GetAllCpuMetricsApiRequest
     {
-        public DateTimeOffset FromTime { get; set; }
+        public DateTime FromTime { get; set; }
         
-        public DateTimeOffset ToTime { get; set; }
+        public DateTime ToTime { get; set; }
 
         public string AgentAddress { get; set; }
     }

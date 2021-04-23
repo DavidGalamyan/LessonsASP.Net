@@ -7,14 +7,14 @@ namespace MetricsManager.Responses
 {
     public class AllNetworkMetricsApiResponse
     {
-        public IList<NetworkMetricsApiDto> Metrics { get; set; }
+        public List<NetworkMetricApiDto> Metrics { get; set; }
     }
-    public class NetworkMetricsApiDto
+    public class NetworkMetricApiDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public int Value { get; set; }
 
-        public DateTimeOffset DateTime { get; set; }
+        public DateTimeOffset Time { get; set; }
     }
 }

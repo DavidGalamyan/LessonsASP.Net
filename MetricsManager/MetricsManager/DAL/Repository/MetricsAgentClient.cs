@@ -1,6 +1,7 @@
 ﻿using MetricsManager.DAL.Interfaces;
 using MetricsManager.Requests;
 using MetricsManager.Responses;
+using Microsoft.Extensions.Logging;
 using NLog;
 using System;
 using System.Net.Http;
@@ -11,15 +12,15 @@ namespace MetricsManager.DAL.Repository
     public class MetricsAgentClient : IMetricsAgentClient
     {
         private readonly HttpClient _httpClient;
-        private readonly ILogger _logger;
+        private readonly ILogger<MetricsAgentClient> _logger;
 
-        public MetricsAgentClient(HttpClient httpClient, ILogger logger)
+        public MetricsAgentClient(HttpClient httpClient, ILogger<MetricsAgentClient> logger)
         {
             _httpClient = httpClient;
             _logger = logger;
         }
         public AllHddMetricsApiResponse GetAllHddMetrics(GetAllHddMetricsApiRequest request)
-        {            
+        {
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/hdd/from/{request.FromTime.ToString("O")}/to/{request.ToTime.ToString("O")}");
             try
             {
@@ -30,7 +31,7 @@ namespace MetricsManager.DAL.Repository
             }
             catch (Exception ex)
             {
-                 _logger.Error(ex,"Чет пошло не так");
+                _logger.LogError(ex,"Чет пошло не так");
             }
             return null;
         }
@@ -45,9 +46,9 @@ namespace MetricsManager.DAL.Repository
                 return JsonSerializer.DeserializeAsync<AllNetworkMetricsApiResponse>(responseStream).Result;
             }
             catch (Exception ex)
-            {
-                _logger.Error(ex, "Чет пошло не так");
+            {     _logger.LogError(ex, "Чет пошло не так");
             }
+           
             return null;
         }
         public AllRamMetricsApiResponse GetAllRamMetrics(GetAllRamMetricsApiRequest request)
@@ -62,25 +63,26 @@ namespace MetricsManager.DAL.Repository
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Чет пошло не так");
+                _logger.LogError(ex, "Чет пошло не так");
             }
             return null;
         }
         public AllCpuMetricsApiResponse GetAllCpuMetrics(GetAllCpuMetricsApiRequest request)
         {
-            var fromParameter = request.FromTime.ToString("O");
-            var toParameter = request.ToTime.ToString("O");
+            string fromParameter = request.FromTime.ToString("O");
+            string toParameter = request.ToTime.ToString("O");
             var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"{request.AgentAddress}/api/metrics/cpu/from/{fromParameter}/to/{toParameter}");
             try
             {
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
 
                 using var responseStream = response.Content.ReadAsStreamAsync().Result;
-                return JsonSerializer.DeserializeAsync<AllCpuMetricsApiResponse>(responseStream).Result;
+                return JsonSerializer.DeserializeAsync<AllCpuMetricsApiResponse>(responseStream, 
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }).Result;
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Чет пошло не так");
+                _logger.LogError(ex, "Чет пошло не так");
             }
             return null;
         }
@@ -96,7 +98,7 @@ namespace MetricsManager.DAL.Repository
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Чет пошло не так");
+                _logger.LogError(ex, "Чет пошло не так");
             }
             return null;
         }

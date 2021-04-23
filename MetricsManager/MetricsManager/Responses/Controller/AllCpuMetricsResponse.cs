@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsManager.Responses
+namespace MetricsManager.Responses.Controller
 {
-    public class AllDotNetMetricsApiResponse
+    public class AllCpuMetricsResponse
     {
-        public List<DotNetMetricApiDto> Metrics { get; set; }
+        public List<CpuMetricDto> Metrics { get; set; }
     }
-    public class DotNetMetricApiDto
+
+    public class CpuMetricDto
     {
         public long Id { get; set; }
-
+        public int AgentID { get; set; }
         public int Value { get; set; }
-
         public DateTimeOffset Time { get; set; }
     }
 }

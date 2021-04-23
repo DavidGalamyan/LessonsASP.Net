@@ -7,14 +7,14 @@ namespace MetricsManager.Responses
 {
     public class AllRamMetricsApiResponse
     {
-        public IList<RamMetricsApiDto> Metrics { get; set; }
+        public List<RamMetricApiDto> Metrics { get; set; }
     }
-    public class RamMetricsApiDto
+    public class RamMetricApiDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public int Value { get; set; }
 
-        public DateTimeOffset DateTime { get; set; }
+        public DateTimeOffset Time { get; set; }
     }
 }
