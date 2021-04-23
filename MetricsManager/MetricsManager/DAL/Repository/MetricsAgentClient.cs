@@ -24,9 +24,9 @@ namespace MetricsManager.DAL.Repository
             try
             {
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
-
                 using var responseStream = response.Content.ReadAsStreamAsync().Result;
-                return JsonSerializer.DeserializeAsync<AllHddMetricsApiResponse>(responseStream).Result;
+                return JsonSerializer.DeserializeAsync<AllHddMetricsApiResponse>(responseStream,
+                                      new JsonSerializerOptions { PropertyNameCaseInsensitive = true }).Result;
             }
             catch (Exception ex)
             {
@@ -40,9 +40,9 @@ namespace MetricsManager.DAL.Repository
             try
             {
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
-
                 using var responseStream = response.Content.ReadAsStreamAsync().Result;
-                return JsonSerializer.DeserializeAsync<AllNetworkMetricsApiResponse>(responseStream).Result;
+                return JsonSerializer.DeserializeAsync<AllNetworkMetricsApiResponse>(responseStream,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }).Result;
             }
             catch (Exception ex)
             {     _logger.LogError(ex, "Чет пошло не так");
@@ -56,9 +56,9 @@ namespace MetricsManager.DAL.Repository
             try
             {
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
-
                 using var responseStream = response.Content.ReadAsStreamAsync().Result;
-                return JsonSerializer.DeserializeAsync<AllRamMetricsApiResponse>(responseStream).Result;
+                return JsonSerializer.DeserializeAsync<AllRamMetricsApiResponse>(responseStream,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }).Result;
             }
             catch (Exception ex)
             {
@@ -92,7 +92,8 @@ namespace MetricsManager.DAL.Repository
                 HttpResponseMessage response = _httpClient.SendAsync(httpRequest).Result;
 
                 using var responseStream = response.Content.ReadAsStreamAsync().Result;
-                return JsonSerializer.DeserializeAsync<AllDotNetMetricsApiResponse>(responseStream).Result;
+                return JsonSerializer.DeserializeAsync<AllDotNetMetricsApiResponse>(responseStream,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }).Result;
             }
             catch (Exception ex)
             {

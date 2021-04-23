@@ -66,6 +66,22 @@ namespace MetricsManager
             services.AddSingleton(new JobScheduleDto(
                 jobType: typeof(CollectingCpuMetricsFromAgentsJob),
                 cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton<CollectingDotNetMetricsFromAgentsJob>();
+            services.AddSingleton(new JobScheduleDto(
+                jobType: typeof(CollectingDotNetMetricsFromAgentsJob),
+                cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton<CollectingHddMetricsFromAgentsJob>();
+            services.AddSingleton(new JobScheduleDto(
+                jobType: typeof(CollectingHddMetricsFromAgentsJob),
+                cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton<CollectingNetworkMetricsFromAgentsJob>();
+            services.AddSingleton(new JobScheduleDto(
+                jobType: typeof(CollectingNetworkMetricsFromAgentsJob),
+                cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton<CollectingRamMetricsFromAgentsJob>();
+            services.AddSingleton(new JobScheduleDto(
+                jobType: typeof(CollectingRamMetricsFromAgentsJob),
+                cronExpression: "0/5 * * * * ?"));
 
         }
 

@@ -27,8 +27,7 @@ namespace MetricsManager.Controllers
         }
 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent([FromRoute] int agentId,[FromRoute] DateTimeOffset fromTime,
-                                                 [FromRoute] DateTimeOffset toTime)
+        public IActionResult GetMetricsFromAgent([FromRoute] int agentId,[FromRoute] DateTimeOffset fromTime,[FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"GetMetricsFromAgent:agentId {agentId},fromTime {fromTime},toTime {toTime}");
             var metrics = _repository.GetByAgentTimeInterval(fromTime, toTime,agentId);
@@ -44,8 +43,7 @@ namespace MetricsManager.Controllers
         }
 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}/percentiles/{percentile}")]
-        public IActionResult GetMetricsByPercentileFromAgent([FromRoute] int agentId, [FromRoute] DateTimeOffset fromTime,
-            [FromRoute] DateTimeOffset toTime, [FromRoute] Percentile percentile)
+        public IActionResult GetMetricsByPercentileFromAgent([FromRoute] int agentId, [FromRoute] DateTimeOffset fromTime,[FromRoute] DateTimeOffset toTime, [FromRoute] Percentile percentile)
         {
             _logger.LogInformation($"GetMetricsByPercentileFromAgent:agentId {agentId},fromTime {fromTime},toTime {toTime},Percentile {percentile}");
             var metrics = _repository.GetByAgentTimeInterval(fromTime, toTime, agentId);
