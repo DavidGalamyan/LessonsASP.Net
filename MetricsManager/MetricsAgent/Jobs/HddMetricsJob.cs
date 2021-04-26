@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace MetricsAgent.Jobs
 {
+    [DisallowConcurrentExecution]
     public class HddMetricsJob : IJob
     {
         private PerformanceCounter _hddCounter;

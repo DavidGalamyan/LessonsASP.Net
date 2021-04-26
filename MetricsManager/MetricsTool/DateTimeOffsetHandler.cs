@@ -5,11 +5,11 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsAgent.DAL.Model
+namespace MetricsTool
 {
     public class DateTimeOffsetHandler : SqlMapper.TypeHandler<DateTimeOffset>
     {
-        public override  DateTimeOffset Parse(object value)
+        public override DateTimeOffset Parse(object value)
             => DateTimeOffset.FromUnixTimeSeconds((long)value);
 
         public override void SetValue(IDbDataParameter parameter, DateTimeOffset value)

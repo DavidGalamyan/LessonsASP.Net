@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 using MetricsAgent.DAL.Interface;
-using MetricsAgent.DAL.Model;
-using MetricsAgent.Requests;
 using MetricsAgent.Responses;
-using MetricsTool;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -26,13 +23,25 @@ namespace MetricsAgent.Controllers
             _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
             _mapper = mapper;
         }
-
-
-        [HttpGet("getmetric")]
-        public IActionResult GetMetricsByTimeInterval([FromBody] MetricsFilterRequest dateTimeOffset)
+        /// <summary>
+        /// Получает метрики CPU на заданном диапазоне времени
+        /// </summary>
+        /// <remarks>
+        /// Пример запроса:
+        ///
+        ///     GET cpumetrics/from/1/to/9999999999
+        ///
+        /// </remarks>
+        /// <param name="fromTime">начальная метрка времени в секундах с 01.01.1970</param>
+        /// <param name="toTime">конечная метрка времени в секундах с 01.01.1970</param>
+        /// <returns>Список метрик, которые были сохранены в заданном диапазоне времени</returns>
+        /// <response code="201">Если все хорошо</response>
+        /// <response code="400">если передали не правильные параетры</response>  
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetMetricsByTimeInterval([FromRoute] DateTimeOffset fromTime,[FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation($"GetMetricsByTimeInterval: fromTime {dateTimeOffset.fromTime},toTime {dateTimeOffset.toTime}");
-            var metrics = _repository.GetByTimeInterval(dateTimeOffset.fromTime, dateTimeOffset.toTime);
+            _logger.LogInformation($"GetMetricsByTimeInterval: fromTime {fromTime},toTime {toTime}");
+            var metrics = _repository.GetByTimeInterval (fromTime,toTime);
             var response = new AllCpuMetricsResponse()
             {
                 Metrics = new List<CpuMetricDto>()

@@ -1,11 +1,12 @@
 ﻿using Dapper;
 using MetricsAgent.DAL.Interface;
-using MetricsAgent.DAL.Interfaces;
+using MetricsTool.SQLiteConnectionSettings;
 using MetricsAgent.DAL.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
+using MetricsTool;
 
 namespace MetricsAgent.DAL.Repository
 {
@@ -43,7 +44,7 @@ namespace MetricsAgent.DAL.Repository
 
             using (var conncetion = new SQLiteConnection(_sqliteConnection.GetConnectionSQLite()))
             {
-                return conncetion.Query<HddMetric>("SELECT * FROM hddmetrics WHERE (Time>=@fromTime AND Time<=@toTime)",
+                return conncetion.Query<HddMetric>("SELECT * FROM hddmetrics WHERE (time>@fromTime AND time<@toTime)",
                   new
                   {
                       fromTime = fromTime.ToUnixTimeSeconds(),

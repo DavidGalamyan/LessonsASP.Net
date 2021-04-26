@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace MetricsAgent.Jobs
 {
+    [DisallowConcurrentExecution]
     public class NetworkMetricsJob : IJob
     {
         private PerformanceCounter _networkCounter;

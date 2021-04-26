@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace MetricsAgent.Jobs
 {
+    [DisallowConcurrentExecution]
     public class CpuMetricsJob : IJob
     {
         private PerformanceCounter _cpuCounter;
